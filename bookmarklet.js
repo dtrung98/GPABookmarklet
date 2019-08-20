@@ -93,11 +93,15 @@ javascript: (function() {
             }
         }
         gpa = totalScores / totalCredits;
+
+        let removedCoursesSize= 0;
+        for(let i =0;i< data.length;i++)
+        if(!data[i].include) removedCoursesSize++;
         console.log("%c \n Chào nhé, GPA nè:\n %c" + gpa + "\n", "color:black", "color:blue; font-size: 30px;");
         console.log("%c \n Tổng tín chỉ:\n %c" + totalCredits + "\n", "color:black", "color:blue; font-size: 30px;");
         console.log("%c \n Tổng điểm:\n %c" + totalScores + "\n", "color:black", "color:blue; font-size: 30px;");
         console.log("%c \n Tổng học phần:\n %c" + data.length + "\n", "color:black", "color:blue; font-size: 30px;");
-        console.log("%c \n Tổng học phần trong GPA:\n %c" + (data.length - exceptData.length) + "\n", "color:black", "color:blue; font-size: 30px;");
+        console.log("%c \n Tổng học phần trong GPA:\n %c" + (data.length - removedCoursesSize) + "\n", "color:black", "color:blue; font-size: 30px;");
 
         howICalculated += "-------------\n" + "GPA : %c " + totalScores + " / " + totalCredits + " = " + gpa;
         cssLog.push("font-weight:bold");
@@ -116,7 +120,9 @@ javascript: (function() {
             removedCss.push("color:black");
         }
 
-        removedSection += "%c  " + exceptData.length + " học phần đã loại bỏ.%c\n";
+       
+
+        removedSection += "%c  " + removedCoursesSize + " học phần đã loại bỏ.%c\n";
         removedCss.push("color:red");
         removedCss.push("color:black");
 
@@ -166,8 +172,8 @@ javascript: (function() {
             $(gpaTableBody).append('<tr class="odd"><td class="left ">GPA</td><td class="center gpa">'+gpa+'</td></tr>');
             $(gpaTableBody).append('<tr class="even"><td class="left">Tổng tín chỉ đã tích luỹ</td><td class="center gpa">'+totalCredits+' tín chỉ</td></tr>');
             $(gpaTableBody).append('<tr class="odd"><td class="left">Tổng điểm đã tích lũy</td><td class="center gpa">'+totalScores+' điểm</td></tr>');
-            $(gpaTableBody).append('<tr class="even"><td class="left">Sô học phần đã đăng ký</td><td class="center gpa">'+data.length+' học phần</td></tr>');
-            $(gpaTableBody).append('<tr class="odd"><td class="left">Số học phần tính trong GPA</td><td class="center gpa">'+(data.length-exceptData.length)+' học phần</td></tr>');
+            $(gpaTableBody).append('<tr class="even"><td class="left">Sô học phần đã học</td><td class="center gpa">'+data.length+' học phần</td></tr>');
+            $(gpaTableBody).append('<tr class="odd"><td class="left">Số học phần tính trong GPA</td><td class="center gpa">'+(data.length - removedCoursesSize)+' học phần</td></tr>');
     
             $(parentDiv).prepend(gpaFieldSet);
         } else {
