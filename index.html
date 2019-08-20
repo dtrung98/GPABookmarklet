@@ -26,12 +26,15 @@
         
             const currentHref = window.location.href;
             const dkhpReg = /.portal([1-9]|)\.hcmus\.edu\.vn\/SinhVien\.aspx\?(.*)pid=211/;
-            if(false||!currentHref.match(dkhpReg)) {
-                window.location.href = &#x22;https://portal6.hcmus.edu.vn/SinhVien.aspx?pid=211&#x22;;
-                return;
-            }
-        
-            let tab = $(&#x22;#tbDiemThiGK&#x22;);
+            let tab;
+            if(!currentHref.match(dkhpReg)) {
+                const portalReg = /.portal([1-9]|)\.hcmus\.edu\.vn/;
+                if(currentHref.match(portalReg)) {
+                    alert(&#x22;Vui l&#xF2;ng &#x111;i t&#x1EDB;i trang \&#x22;Tra c&#x1EE9;u K&#x1EBF;t qu&#x1EA3; h&#x1ECD;c t&#x1EAD;p\&#x22; tr&#x1B0;&#x1EDB;c&#x22;);
+                     } return;
+            };
+            WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&#x22;ctl00$ContentPlaceHolder1$ctl00$btnXemDiemThi&#x22;, &#x22;&#x22;, true, &#x22;&#x22;, &#x22;&#x22;, false, false));
+             tab = $(&#x22;#tbDiemThiGK&#x22;);
             const exceptCourses = [
                 &#x22;Anh v&#x103;n&#x22;,
                 &#x22;Gi&#xE1;o d&#x1EE5;c qu&#x1ED1;c ph&#xF2;ng&#x22;,
@@ -59,10 +62,15 @@
                         whyExclude: &#x22;&#x22;
                     };
         
-                    if(!row.credit) row.credit = 0;
-                    if(!row.score) row.score = 0;
-        
-                    if (row.score &#x3C; 5) {
+                    if(!row.credit) {row.credit = 0;
+                    row.include = false;
+                    row.whyExclude += &#x22;H&#x1ECD;c ph&#x1EA7;n kh&#xF4;ng t&#xED;n ch&#x1EC9;&#x22;;
+                    }
+                    else if(!row.score) {row.score = 0;
+                    row.include = false;
+                    row.whyExclude +=&#x22;Ch&#x1B0;a ho&#x1EB7;c kh&#xF4;ng c&#xF3; &#x111;i&#x1EC3;m&#x22;;
+                    }
+                    else if (row.score &#x3C; 5) {
                         row.include = false;
                         row.whyExclude += &#x22;&#x110;i&#x1EC3;m nh&#x1ECF; h&#x1A1;n 5, ch&#x1B0;a qua m&#xF4;n. &#x22;;
                     } else {
@@ -130,7 +138,7 @@
                 cssLog.push(&#x22;font-weight:bold&#x22;);
         
         
-                let removedSection = &#x22;%c Kh&#xF4;ng bao g&#x1ED3;m h&#x1ECD;c ph&#x1EA7;n sau &#x111;&#xE2;y: \n\n%c&#x22;;
+                let removedSection = &#x22;%c Kh&#xF4;ng bao g&#x1ED3;m nh&#x1EEF;ng h&#x1ECD;c ph&#x1EA7;n sau &#x111;&#xE2;y: \n\n%c&#x22;;
                 let removedCss = [&#x22;font-size:16px&#x22;, &#x22;font-size:normal&#x22;];
         
                 for (let i = 0; i &#x3C; exceptData.length; i++) {
@@ -161,7 +169,7 @@
         
                     let headTh = $($(headTr).find(&#x22;th&#x22;)[0]).clone();
                     $(headTh).attr(&#x22;title&#x22;, &#x22;T&#xED;nh hay kh&#xF4;ng t&#xED;nh h&#x1ECD;c ph&#x1EA7;n n&#xE0;y trong GPA&#x22;);
-                    $(headTh).children().html(&#x22;In GPA&#x22;);
+                    $(headTh).children().html(&#x22;Trong GPA&#x22;);
         
                     $(headTr).prepend(headTh);
         
@@ -211,7 +219,7 @@
         
         
         
-            } else alert(&#x22;Sorry, couldn&#x27;t parse this website&#x22;);
+            } else alert(&#x22;Xin l&#x1ED7;i, kh&#xF4;ng th&#x1EC3; ph&#xE2;n t&#xED;ch website&#x22;);
         }
         
         )();"> Khtn GPA </a>

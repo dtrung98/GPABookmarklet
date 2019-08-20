@@ -3,12 +3,15 @@ javascript: (function() {
 
     const currentHref = window.location.href;
     const dkhpReg = /.portal([1-9]|)\.hcmus\.edu\.vn\/SinhVien\.aspx\?(.*)pid=211/;
-    if(false||!currentHref.match(dkhpReg)) {
-        window.location.href = "https://portal6.hcmus.edu.vn/SinhVien.aspx?pid=211";
-        return;
-    }
-
-    let tab = $("#tbDiemThiGK");
+    let tab;
+    if(!currentHref.match(dkhpReg)) {
+        const portalReg = /.portal([1-9]|)\.hcmus\.edu\.vn/;
+        if(currentHref.match(portalReg)) {
+            alert("Vui lòng đi tới trang \"Tra cứu Kết quả học tập\" trước");
+             } return;
+    };
+    WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$ContentPlaceHolder1$ctl00$btnXemDiemThi", "", true, "", "", false, false));
+     tab = $("#tbDiemThiGK");
     const exceptCourses = [
         "Anh văn",
         "Giáo dục quốc phòng",
@@ -36,10 +39,15 @@ javascript: (function() {
                 whyExclude: ""
             };
 
-            if(!row.credit) row.credit = 0;
-            if(!row.score) row.score = 0;
-
-            if (row.score < 5) {
+            if(!row.credit) {row.credit = 0;
+            row.include = false;
+            row.whyExclude += "Học phần không tín chỉ";
+            }
+            else if(!row.score) {row.score = 0;
+            row.include = false;
+            row.whyExclude +="Chưa hoặc không có điểm";
+            }
+            else if (row.score < 5) {
                 row.include = false;
                 row.whyExclude += "Điểm nhỏ hơn 5, chưa qua môn. ";
             } else {
@@ -107,7 +115,7 @@ javascript: (function() {
         cssLog.push("font-weight:bold");
 
 
-        let removedSection = "%c Không bao gồm học phần sau đây: \n\n%c";
+        let removedSection = "%c Không bao gồm những học phần sau đây: \n\n%c";
         let removedCss = ["font-size:16px", "font-size:normal"];
 
         for (let i = 0; i < exceptData.length; i++) {
@@ -138,7 +146,7 @@ javascript: (function() {
 
             let headTh = $($(headTr).find("th")[0]).clone();
             $(headTh).attr("title", "Tính hay không tính học phần này trong GPA");
-            $(headTh).children().html("In GPA");
+            $(headTh).children().html("Trong GPA");
 
             $(headTr).prepend(headTh);
 
@@ -188,7 +196,7 @@ javascript: (function() {
 
 
 
-    } else alert("Sorry, couldn't parse this website");
+    } else alert("Xin lỗi, không thể phân tích website");
 }
 
 )();
