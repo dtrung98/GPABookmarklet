@@ -1,4 +1,4 @@
-javascript: (function() {
+javascript: (function gpa() {
     console.clear();
 
     const currentHref = window.location.href;
@@ -10,12 +10,56 @@ javascript: (function() {
             alert("Vui lòng đi tới trang \"Tra cứu Kết quả học tập\" trước");
              } return;
     };
-    WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$ContentPlaceHolder1$ctl00$btnXemDiemThi", "", true, "", "", false, false));
+    var dataArray = $("#aspnetForm").serializeArray();
+    var param = dataArray.reduce(function(a, x) { a[x.name] = x.value; return a; }, {});;
+
+    const isAllSection = param['ctl00$ContentPlaceHolder1$ctl00$cboNamHoc_gvDKHPLichThi$ob_CbocboNamHoc_gvDKHPLichThiTB'] == '--Tất cả--';
+    let semeterInput = $('input[name="ctl00$ContentPlaceHolder1$ctl00$cboHocKy_gvDKHPLichThi$ob_CbocboHocKy_gvDKHPLichThiTB"]');
+    if(semeterInput) semeterInput = semeterInput[0];
+    else return;
+
+    const isSemeterDisabled = $(semeterInput).attr('disabled') || $(semeterInput).prop('disabled'); 
+    if(!isAllSection || isSemeterDisabled) {
+        param['ctl00$ContentPlaceHolder1$ctl00$cboNamHoc_gvDKHPLichThi$ob_CbocboNamHoc_gvDKHPLichThiTB'] = '--Tất cả--';
+        param['ctl00$ContentPlaceHolder1$ctl00$cboNamHoc_gvDKHPLichThi$ob_CbocboNamHoc_gvDKHPLichThiSIS'] = '0';
+        param['ctl00$ContentPlaceHolder1$ctl00$cboNamHoc_gvDKHPLichThi'] = '0';
+        param['ctl00$ContentPlaceHolder1$ctl00$cboHocKy_gvDKHPLichThi$ob_CbocboHocKy_gvDKHPLichThiTB'] = '1';
+        param['ctl00$ContentPlaceHolder1$ctl00$cboHocKy_gvDKHPLichThi$ob_CbocboHocKy_gvDKHPLichThiSIS'] = '0';
+        param['ctl00$ContentPlaceHolder1$ctl00$cboHocKy_gvDKHPLichThi'] = '1';
+        param['ctl00$ContentPlaceHolder1$ctl00$btnXemDiemThi'] = 'Xem Kết Quả Học Tập';
+
+        const parentDiv = $("#lich-thi-dkhp")[0];
+        if(parentDiv)
+        parentDiv.prepend($('<div style="font-size:20px; color:#1B486A;text-align:center;margin:10px;">Chờ một chút...</div>')[0]);
+        $.ajax({
+            type: "POST",
+            url: "/SinhVien.aspx?pid=211",
+            data: param,
+            success: function(res) {
+                let html = $.parseHTML(res);
+                let HK = $(html).find("input[name='ctl00$ContentPlaceHolder1$ctl00$cboNamHoc_gvDKHPLichThi$ob_CbocboNamHoc_gvDKHPLichThiTB']");
+                
+                if(HK)
+                console.log($(HK[0]).attr("value"));
+    
+                var newDoc = document.open("text/html", "replace");
+                newDoc.write(res);
+                newDoc.close();
+                gpa();
+            },
+            
+        });
+        return;
+    }
+    
      tab = $("#tbDiemThiGK");
     const exceptCourses = [
         "Anh văn",
         "Giáo dục quốc phòng",
-        "Thể dục"
+        "Thể dục",
+        "Anh van",
+        "Giao duc quoc phong",
+        "The duc"
     ];
 
     if (tab) {
@@ -177,9 +221,9 @@ javascript: (function() {
             $(gpaTableHead).append(gpaHeadCol1);
             $(gpaTableHead).append(gpaHeadCol2);
 
-            $(gpaTableBody).append('<tr class="odd"><td class="left ">GPA</td><td class="center gpa">'+gpa+'</td></tr>');
+            $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình tích lũy (GPA)</td><td class="center gpa"><b>'+gpa+'</b></td></tr>');
             $(gpaTableBody).append('<tr class="even"><td class="left">Tổng tín chỉ đã tích luỹ</td><td class="center gpa">'+totalCredits+' tín chỉ</td></tr>');
-            $(gpaTableBody).append('<tr class="odd"><td class="left">Tổng điểm đã tích lũy</td><td class="center gpa">'+totalScores+' điểm</td></tr>');
+            $(gpaTableBody).append('<tr class="odd"><td class="left">Tổng điểm đã tích lũy</td><td class="center gpa">'+totalScores+'</td></tr>');
             $(gpaTableBody).append('<tr class="even"><td class="left">Sô học phần đã học</td><td class="center gpa">'+data.length+' học phần</td></tr>');
             $(gpaTableBody).append('<tr class="odd"><td class="left">Số học phần tính trong GPA</td><td class="center gpa">'+(data.length - removedCoursesSize)+' học phần</td></tr>');
     
