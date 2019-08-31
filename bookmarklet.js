@@ -206,7 +206,7 @@ javascript: (function gpa() {
             }
 
             let parentDiv = $("#lich-thi-dkhp")[0];
-            let gpaFieldSet = $('<fieldset><legend>Thống kê GPA</legend><div id="tbGPA_wrapper" class="dataTables_wrapper" rold="grid"><table id="tbGPA" class="dkhp-table dataTable"><thead></thead><tbody role="alert" aria-live="polite" aria-relevant="all"></tbody></table></div><p style="margin-top: 10px; color: blue;"><strong>(*)</strong>: Nhấn Ctr+Shift+I và chọn tab Console để xem chi tiết tính toán.</p></fieldset>');
+            let gpaFieldSet = $('<fieldset><legend>Thống kê GPA</legend><div id="tbGPA_wrapper" class="dataTables_wrapper" rold="grid"><table id="tbGPA" class="dkhp-table dataTable"><thead></thead><tbody role="alert" aria-live="polite" aria-relevant="all"></tbody></table></div><p style="margin-top: 10px; color: blue;"><strong>(*)</strong>: Nhấn Ctr+Shift+I và chọn tab Console để xem chi tiết tính toán.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nếu bạn thấy hữu ích, hãy tặng mình một Star <a href="https://github.com/dtrung98/GPABookmarklet">Tại Đây</a> nhé ^^</p></fieldset>');
             let gpaTableHead = $(gpaFieldSet).find("thead")[0];
             let gpaTableBody = $(gpaFieldSet).find("tbody")[0];
 
