@@ -29,8 +29,8 @@ javascript: (function gpa() {
         param['ctl00$ContentPlaceHolder1$ctl00$btnXemDiemThi'] = 'Xem Kết Quả Học Tập';
 
         const parentDiv = $("#lich-thi-dkhp")[0];
-        if(parentDiv)
-        parentDiv.prepend($('<div style="font-size:20px; color:#1B486A;text-align:center;margin:10px;">Chờ một chút...</div>')[0]);
+        if(parentDiv&&!$("#loading-text")[0])
+        parentDiv.prepend($('<div id="loading-text" style="font-size:20px; color:#1B486A;text-align:center;margin:10px;">Chờ một chút...</div>')[0]);
         $.ajax({
             type: "POST",
             url: "/SinhVien.aspx?pid=211",
@@ -237,10 +237,7 @@ javascript: (function gpa() {
             }
 
         }
-
-
-
-    } else alert("Xin lỗi, không thể phân tích website");
+    }
 }
 
 )();
