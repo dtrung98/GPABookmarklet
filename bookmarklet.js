@@ -274,6 +274,27 @@ javascript: (function gpa() {
         }
     }
 
+    class SaveCoursesList 
+    {
+        constructor() {
+            this.data = data;
+        }
+
+        saveToFileCSV() {
+            let csv = 'Tên môn học, Số tín chỉ, Điểm, Học kỳ, Lớp, Ghi chú\n';
+            this.data.forEach(function (row) {
+                if (row.include)
+                    csv += row.course + ', ' + row.credit + ', ' + row.score + ', ' + row.semester + ', ' + row.class + ', ' + row.note + '\n';
+            });
+
+            let hiddenElement = document.createElement('a');
+            hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent('\uFEFF' + csv);
+            hiddenElement.target = '_blank';
+            hiddenElement.download = 'GPA.csv';
+            hiddenElement.click();
+        }
+    }
+
     initUserCourseData();
     let cal = new Calculation();
     cal.calculateGPA();
@@ -289,4 +310,19 @@ javascript: (function gpa() {
         cal.calculateGPA();
         cal.formatCoursesTableAndCreateResultTable();
     });
+
+    // Create a button to save courses list to file
+    if ( !$('#saveCoursesList')[0])
+    {
+        let saveCoursesList = new SaveCoursesList();
+        let saveButton = $('#ob_iBbtnXemDiemThiContainer').clone().attr("id", "saveCoursesList");
+        $(saveButton).attr("style", "width: 25%");
+        $(saveButton).css({'margin-bottom': '10px'});
+        $($(saveButton).find(".ob_iBC")[0]).text("Lưu danh sách học phần đã chọn");
+        $(saveButton).insertBefore('#tbDiemThiGK_wrapper');
+        $(saveButton).click(function (event) {
+            event.preventDefault();
+            saveCoursesList.saveToFileCSV();
+        });
+    }
 })();

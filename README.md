@@ -26,6 +26,8 @@ Besides that, I also add some minor modifications to this bookmaklet for ~~my~~ 
 
 - Calculate "Điểm trung bình học tập" (includes courses that student has not passed).
 
+- Add option to save the list of courses as CSV file if you want. Only courses which are checked in "Trong GPA" column will be saved.
+
 - Sort courses by the "Trong GPA" column.
 
 - Enable searching course in the table.
