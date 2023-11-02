@@ -56,6 +56,14 @@ javascript: (function gpa() {
     let data = [];
     let rows = null;
 
+    let totalCredits = 0;
+    let notPassCredits = 0;
+    let totalScores = 0;
+    let notPassTotalScore = 0;
+    let gpa = 0;
+    let notPassGPA = 0;
+    let removedCoursesSize = 0;
+
     function initUserCourseData() {
 
         const exceptCourses = [
@@ -138,12 +146,6 @@ javascript: (function gpa() {
     function calculateGPA() {
         console.clear();
 
-        let totalCredits = 0;
-        let notPassCredits = 0;
-        let totalScores = 0;
-        let notPassTotalScore = 0;
-        let gpa = 0;
-        let notPassGPA = 0;
         let howICalculated = "%c Điểm tính thế nào nhở ?%c \n\n";
         let cssLog = ["font-size:16px", "font-size:normal"];
 
@@ -174,7 +176,6 @@ javascript: (function gpa() {
         gpa = totalScores / totalCredits;
         notPassGPA = (totalScores + notPassTotalScore) / (totalCredits + notPassCredits);
 
-        let removedCoursesSize = 0;
         for (let i = 0; i < data.length; i++)
             if (!data[i].include) removedCoursesSize++;
         console.log("%c \n Chào nhé, GPA nè:\n %c" + gpa + "\n", "color:black", "color:blue; font-size: 30px;");
@@ -208,15 +209,13 @@ javascript: (function gpa() {
         console.log(howICalculated, ...cssLog);
 
         console.log("(Kéo lên để xem chi tiết)");
-
-
-
     }
 
     function formatCoursesTableAndCreateResultTable() {
         let headTr = tab.find("thead tr")[0];
         let headTh = $($(headTr).find("th")[0]).clone();
 
+        
         if ($(headTr).find("th").length < 8) { // First time calculate GPA. Insert checkbox column.
 
             $(headTh).attr("title", "Tính hay không tính học phần này trong GPA");
@@ -227,8 +226,8 @@ javascript: (function gpa() {
             for (let i = 0; i < rows.length; i++) {
                 $(rows[i]).prepend('<td class= "center gpa-checkbox" style="width:60px;" ><input type="checkbox"' + ((data[i].include) ? " checked " : "") + ' /></td>');
             }
-        }
-
+        } 
+        
         let parentDiv = $("#lich-thi-dkhp")[0];
         $("#tbGPA").remove()
         let gpaFieldSet = $('<fieldset id="tbGPA"><legend>Thống kê GPA</legend><div id="tbGPA_wrapper" class="dataTables_wrapper" rold="grid"><table id="tbGPA" class="dkhp-table dataTable"><thead></thead><tbody role="alert" aria-live="polite" aria-relevant="all"></tbody></table></div><p style="margin-top: 10px; color: blue;"><strong>(*)</strong>: Nhấn Ctr+Shift+I và chọn tab Console để xem chi tiết tính toán.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nếu bạn thấy hữu ích, hãy tặng mình một Star <a href="https://github.com/dtrung98/GPABookmarklet">Tại Đây</a> nhé ^^</p></fieldset>');
@@ -245,7 +244,7 @@ javascript: (function gpa() {
 
         $(gpaTableHead).append(gpaHeadCol1);
         $(gpaTableHead).append(gpaHeadCol2);
-
+        
         $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình tích lũy (GPA)</td><td class="center gpa" id="calGPA"><b>' + gpa + '</b></td></tr>');
         $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình học tập</td><td class="center gpa" id="calGPA"><b>' + notPassGPA + '</b></td></tr>');
         $(gpaTableBody).append('<tr class="even"><td class="left">Tổng tín chỉ đã tích luỹ</td><td class="center gpa" id="calSumCredit">' + totalCredits + ' tín chỉ</td></tr>');
@@ -254,7 +253,7 @@ javascript: (function gpa() {
         $(gpaTableBody).append('<tr class="odd"><td class="left">Số học phần tính trong GPA</td><td class="center gpa" id="sumCalCourse">' + (data.length - removedCoursesSize) + ' học phần</td></tr>');
 
         $(parentDiv).prepend(gpaFieldSet);
-
+        
         for (let i = 0; i < rows.length; i++) {
             if (!data[i].include) {
                 if (data[i].whyExclude.includes("không tính"))
@@ -268,7 +267,7 @@ javascript: (function gpa() {
                 if (data[i].whyExclude == "") $(rows[i]).removeAttr("style");
                 else $(rows[i]).attr("style", "color:yellow;text-decoration: line-through;");
             }
-        }
+        } 
     }
 
     initUserCourseData();
