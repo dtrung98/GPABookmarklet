@@ -56,14 +56,6 @@ javascript: (function gpa() {
     let data = [];
     let rows = null;
 
-    let totalCredits = 0;
-    let notPassCredits = 0;
-    let totalScores = 0;
-    let notPassTotalScore = 0;
-    let gpa = 0;
-    let notPassGPA = 0;
-    let removedCoursesSize = 0;
-
     function initUserCourseData() {
 
         const exceptCourses = [
@@ -143,136 +135,149 @@ javascript: (function gpa() {
         }
     }
 
-    function calculateGPA() {
-        console.clear();
-
-        let howICalculated = "%c Điểm tính thế nào nhở ?%c \n\n";
-        let cssLog = ["font-size:16px", "font-size:normal"];
-
-        for (let i = 0; i < data.length; i++) {
-            let item = data[i];
-            if (item.include) {
-                totalCredits += item.credit;
-                totalScores += item.credit * item.score;
-                howICalculated += " " + item.course + ":%c " + item.score + "%c x%c " + item.credit + "%c =%c " + item.credit * item.score + "%c \n";
-                cssLog.push("font-weight:bold;");
-                cssLog.push("font-weight:normal;");
-                cssLog.push("font-weight:bold;");
-                cssLog.push("font-weight:normal;");
-                cssLog.push("font-weight:bold;");
-                cssLog.push("font-weight:normal;");
-            } else {
-                if (item.whyExclude.includes("5")) // Used to calculate even not passed gpa
-                {
-                    console.log(item);
-                    notPassCredits += item.credit;
-                    notPassTotalScore += item.credit * item.score;
-                }
-                howICalculated += "%c " + item.course + ": " + item.score + " x " + item.credit + "%c \n";
-                cssLog.push("color:orange;text-decoration: line-through;");
-                cssLog.push("color:black;");
-            }
+    class Calculation {
+        constructor() {
+            this.totalCredits = 0;
+            this.notPassCredits = 0;
+            this.totalScores = 0;
+            this.notPassTotalScore = 0;
+            this.gpa = 0;
+            this.notPassGPA = 0;
+            this.removedCoursesSize = 0;
         }
-        gpa = totalScores / totalCredits;
-        notPassGPA = (totalScores + notPassTotalScore) / (totalCredits + notPassCredits);
 
-        for (let i = 0; i < data.length; i++)
-            if (!data[i].include) removedCoursesSize++;
-        console.log("%c \n Chào nhé, GPA nè:\n %c" + gpa + "\n", "color:black", "color:blue; font-size: 30px;");
-        console.log("%c \n Tổng tín chỉ:\n %c" + totalCredits + "\n", "color:black", "color:blue; font-size: 30px;");
-        console.log("%c \n Tổng điểm:\n %c" + totalScores + "\n", "color:black", "color:blue; font-size: 30px;");
-        console.log("%c \n Tổng học phần:\n %c" + data.length + "\n", "color:black", "color:blue; font-size: 30px;");
-        console.log("%c \n Tổng học phần trong GPA:\n %c" + (data.length - removedCoursesSize) + "\n", "color:black", "color:blue; font-size: 30px;");
+        calculateGPA () {
+            console.clear();
 
-        howICalculated += "-------------\n" + "GPA : %c " + totalScores + " / " + totalCredits + " = " + gpa;
-        cssLog.push("font-weight:bold");
+            let howICalculated = "%c Điểm tính thế nào nhở ?%c \n\n";
+            let cssLog = ["font-size:16px", "font-size:normal"];
+
+            for (let i = 0; i < data.length; i++) {
+                let item = data[i];
+                if (item.include) {
+                    this.totalCredits += item.credit;
+                    this.totalScores += item.credit * item.score;
+                    howICalculated += " " + item.course + ":%c " + item.score + "%c x%c " + item.credit + "%c =%c " + item.credit * item.score + "%c \n";
+                    cssLog.push("font-weight:bold;");
+                    cssLog.push("font-weight:normal;");
+                    cssLog.push("font-weight:bold;");
+                    cssLog.push("font-weight:normal;");
+                    cssLog.push("font-weight:bold;");
+                    cssLog.push("font-weight:normal;");
+                } else {
+                    if (item.whyExclude.includes("5")) // Used to calculate even not passed gpa
+                    {
+                        this.notPassCredits += item.credit;
+                        this.notPassTotalScore += item.credit * item.score;
+                    }
+                    howICalculated += "%c " + item.course + ": " + item.score + " x " + item.credit + "%c \n";
+                    cssLog.push("color:orange;text-decoration: line-through;");
+                    cssLog.push("color:black;");
+                }
+            }
+            this.gpa = this.totalScores / this.totalCredits;
+            this.notPassGPA = (this.totalScores + this.notPassTotalScore) / (this.totalCredits + this.notPassCredits);
+
+            for (let i = 0; i < data.length; i++)
+                if (!data[i].include) this.removedCoursesSize++;
+            console.log("%c \n Chào nhé, GPA nè:\n %c" + this.gpa + "\n", "color:black", "color:blue; font-size: 30px;");
+            console.log("%c \n Tổng tín chỉ:\n %c" + this.totalCredits + "\n", "color:black", "color:blue; font-size: 30px;");
+            console.log("%c \n Tổng điểm:\n %c" + this.totalScores + "\n", "color:black", "color:blue; font-size: 30px;");
+            console.log("%c \n Tổng học phần:\n %c" + data.length + "\n", "color:black", "color:blue; font-size: 30px;");
+            console.log("%c \n Tổng học phần trong GPA:\n %c" + (data.length - this.removedCoursesSize) + "\n", "color:black", "color:blue; font-size: 30px;");
+
+            howICalculated += "-------------\n" + "GPA : %c " + this.totalScores + " / " + this.totalCredits + " = " + this.gpa;
+            cssLog.push("font-weight:bold");
 
 
-        let removedSection = "%c Không bao gồm những học phần sau đây: \n\n%c";
-        let removedCss = ["font-size:16px", "font-size:normal"];
+            let removedSection = "%c Không bao gồm những học phần sau đây: \n\n%c";
+            let removedCss = ["font-size:16px", "font-size:normal"];
 
-        for (let i = 0; i < exceptData.length; i++) {
-            removedSection += "%c  loại bỏ: %c" + exceptData[i].course + " (" + exceptData[i].semester + ")" + "\n%c lý do: %c" + exceptData[i].whyExclude + "\n\n%c";
-            removedCss.push("color:black");
-            removedCss.push("color:blue");
-            removedCss.push("color:black");
+            for (let i = 0; i < exceptData.length; i++) {
+                removedSection += "%c  loại bỏ: %c" + exceptData[i].course + " (" + exceptData[i].semester + ")" + "\n%c lý do: %c" + exceptData[i].whyExclude + "\n\n%c";
+                removedCss.push("color:black");
+                removedCss.push("color:blue");
+                removedCss.push("color:black");
 
+                removedCss.push("color:red");
+                removedCss.push("color:black");
+            }
+
+            removedSection += "%c  " + this.removedCoursesSize + " học phần đã loại bỏ.%c\n";
             removedCss.push("color:red");
             removedCss.push("color:black");
+
+            console.log(removedSection, ...removedCss);
+            console.log(howICalculated, ...cssLog);
+
+            console.log("(Kéo lên để xem chi tiết)");
         }
 
-        removedSection += "%c  " + removedCoursesSize + " học phần đã loại bỏ.%c\n";
-        removedCss.push("color:red");
-        removedCss.push("color:black");
+        formatCoursesTableAndCreateResultTable() {
 
-        console.log(removedSection, ...removedCss);
-        console.log(howICalculated, ...cssLog);
+            let headTr = tab.find("thead tr")[0];
+            let headTh = $($(headTr).find("th")[0]).clone();
 
-        console.log("(Kéo lên để xem chi tiết)");
-    }
+            if ($(headTr).find("th").length < 8) { // First time calculate GPA. Insert checkbox column.
 
-    function formatCoursesTableAndCreateResultTable() {
-        let headTr = tab.find("thead tr")[0];
-        let headTh = $($(headTr).find("th")[0]).clone();
+                $(headTh).attr("title", "Tính hay không tính học phần này trong GPA");
+                $(headTh).children().html("Trong GPA");
 
-        
-        if ($(headTr).find("th").length < 8) { // First time calculate GPA. Insert checkbox column.
+                $(headTr).prepend(headTh);
 
-            $(headTh).attr("title", "Tính hay không tính học phần này trong GPA");
-            $(headTh).children().html("Trong GPA");
+                for (let i = 0; i < rows.length; i++) {
+                    $(rows[i]).prepend('<td class= "center gpa-checkbox" style="width:60px;" ><input type="checkbox"' + ((data[i].include) ? " checked " : "") + ' /></td>');
+                }
+            }
 
-            $(headTr).prepend(headTh);
+            let parentDiv = $("#lich-thi-dkhp")[0];
+            $("#tbGPA").remove();
+            let gpaFieldSet = $('<fieldset id="tbGPA"><legend>Thống kê GPA</legend><div id="tbGPA_wrapper" class="dataTables_wrapper" rold="grid"><table id="tbGPA" class="dkhp-table dataTable"><thead></thead><tbody role="alert" aria-live="polite" aria-relevant="all"></tbody></table></div><p style="margin-top: 10px; color: blue;"><strong>(*)</strong>: Nhấn Ctr+Shift+I và chọn tab Console để xem chi tiết tính toán.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nếu bạn thấy hữu ích, hãy tặng mình một Star <a href="https://github.com/dtrung98/GPABookmarklet">Tại Đây</a> nhé ^^</p></fieldset>');
+            let gpaTableHead = $(gpaFieldSet).find("thead")[0];
+            let gpaTableBody = $(gpaFieldSet).find("tbody")[0];
+
+            const gpaHeadCol1 = $($(headTr).find("th")[2]).clone();
+            $(gpaHeadCol1).attr("title", "Tên mục");
+            $(gpaHeadCol1).children().html("Tên mục");
+
+            const gpaHeadCol2 = headTh.clone();
+            $(gpaHeadCol2).attr("title", "Giá trị");
+            $(gpaHeadCol2).children().html("Giá trị");
+
+            $(gpaTableHead).append(gpaHeadCol1);
+            $(gpaTableHead).append(gpaHeadCol2);
+
+            $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình tích lũy (GPA)</td><td class="center gpa" id="calGPA"><b>' + this.gpa + '</b></td></tr>');
+            $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình học tập</td><td class="center gpa" id="calGPA"><b>' + this.notPassGPA + '</b></td></tr>');
+            $(gpaTableBody).append('<tr class="even"><td class="left">Tổng tín chỉ đã tích luỹ</td><td class="center gpa" id="calSumCredit">' + this.totalCredits + ' tín chỉ</td></tr>');
+            $(gpaTableBody).append('<tr class="odd"><td class="left">Tổng điểm đã tích lũy</td><td class="center gpa" id="sumScore">' + this.totalScores + '</td></tr>');
+            $(gpaTableBody).append('<tr class="even"><td class="left">Sô học phần đã học</td><td class="center gpa" id="sumCourse">' + data.length + ' học phần</td></tr>');
+            $(gpaTableBody).append('<tr class="odd"><td class="left">Số học phần tính trong GPA</td><td class="center gpa" id="sumCalCourse">' + (data.length - this.removedCoursesSize) + ' học phần</td></tr>');
+
+            $(parentDiv).prepend(gpaFieldSet);
 
             for (let i = 0; i < rows.length; i++) {
-                $(rows[i]).prepend('<td class= "center gpa-checkbox" style="width:60px;" ><input type="checkbox"' + ((data[i].include) ? " checked " : "") + ' /></td>');
+                if (!data[i].include) {
+                    if (data[i].whyExclude.includes("không tính"))
+                        $(rows[i]).attr("style", "color:blue;text-decoration: line-through;");
+                    else if (data[i].whyExclude == "")
+                        $(rows[i]).attr("style", "color:grey;text-decoration: line-through;");
+
+                    else
+                        $(rows[i]).attr("style", "color:red;text-decoration: line-through;");
+                }
+                else {
+                    if (data[i].whyExclude == "") $(rows[i]).removeAttr("style");
+                    else $(rows[i]).attr("style", "color:yellow;text-decoration: line-through;");
+                }
             }
-        } 
-        
-        let parentDiv = $("#lich-thi-dkhp")[0];
-        $("#tbGPA").remove()
-        let gpaFieldSet = $('<fieldset id="tbGPA"><legend>Thống kê GPA</legend><div id="tbGPA_wrapper" class="dataTables_wrapper" rold="grid"><table id="tbGPA" class="dkhp-table dataTable"><thead></thead><tbody role="alert" aria-live="polite" aria-relevant="all"></tbody></table></div><p style="margin-top: 10px; color: blue;"><strong>(*)</strong>: Nhấn Ctr+Shift+I và chọn tab Console để xem chi tiết tính toán.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nếu bạn thấy hữu ích, hãy tặng mình một Star <a href="https://github.com/dtrung98/GPABookmarklet">Tại Đây</a> nhé ^^</p></fieldset>');
-        let gpaTableHead = $(gpaFieldSet).find("thead")[0];
-        let gpaTableBody = $(gpaFieldSet).find("tbody")[0];
-
-        const gpaHeadCol1 = $($(headTr).find("th")[2]).clone();
-        $(gpaHeadCol1).attr("title", "Tên mục");
-        $(gpaHeadCol1).children().html("Tên mục");
-
-        const gpaHeadCol2 = headTh.clone();
-        $(gpaHeadCol2).attr("title", "Giá trị");
-        $(gpaHeadCol2).children().html("Giá trị");
-
-        $(gpaTableHead).append(gpaHeadCol1);
-        $(gpaTableHead).append(gpaHeadCol2);
-        
-        $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình tích lũy (GPA)</td><td class="center gpa" id="calGPA"><b>' + gpa + '</b></td></tr>');
-        $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình học tập</td><td class="center gpa" id="calGPA"><b>' + notPassGPA + '</b></td></tr>');
-        $(gpaTableBody).append('<tr class="even"><td class="left">Tổng tín chỉ đã tích luỹ</td><td class="center gpa" id="calSumCredit">' + totalCredits + ' tín chỉ</td></tr>');
-        $(gpaTableBody).append('<tr class="odd"><td class="left">Tổng điểm đã tích lũy</td><td class="center gpa" id="sumScore">' + totalScores + '</td></tr>');
-        $(gpaTableBody).append('<tr class="even"><td class="left">Sô học phần đã học</td><td class="center gpa" id="sumCourse">' + data.length + ' học phần</td></tr>');
-        $(gpaTableBody).append('<tr class="odd"><td class="left">Số học phần tính trong GPA</td><td class="center gpa" id="sumCalCourse">' + (data.length - removedCoursesSize) + ' học phần</td></tr>');
-
-        $(parentDiv).prepend(gpaFieldSet);
-        
-        for (let i = 0; i < rows.length; i++) {
-            if (!data[i].include) {
-                if (data[i].whyExclude.includes("không tính"))
-                    $(rows[i]).attr("style", "color:blue;text-decoration: line-through;");
-                else if (data[i].whyExclude == "")
-                    $(rows[i]).attr("style", "color:grey;text-decoration: line-through;");
-                else
-                    $(rows[i]).attr("style", "color:red;text-decoration: line-through;");
-            }
-            else {
-                if (data[i].whyExclude == "") $(rows[i]).removeAttr("style");
-                else $(rows[i]).attr("style", "color:yellow;text-decoration: line-through;");
-            }
-        } 
+        }
     }
 
     initUserCourseData();
-    calculateGPA(); // Calculate GPA at first time
-    formatCoursesTableAndCreateResultTable();
+    let cal = new Calculation();
+    cal.calculateGPA();
+    cal.formatCoursesTableAndCreateResultTable();
 
     // When deselect a course, recalculate GPA
     $('input[type="checkbox"]').change(function () {
@@ -280,8 +285,8 @@ javascript: (function gpa() {
         let idCourse = $(courseRow).attr("id");
         data[idCourse - 1].include = $(this).is(":checked");
 
-        calculateGPA();
-        formatCoursesTableAndCreateResultTable();
-    })
-}
-)();
+        cal = new Calculation();
+        cal.calculateGPA();
+        cal.formatCoursesTableAndCreateResultTable();
+    });
+})();
