@@ -1,5 +1,5 @@
 javascript: (function gpa() {
-    console.clear()
+    //console.clear()
 
     const currentHref = window.location.href;
     const dkhpReg = /.portal([1-9]|)\.hcmus\.edu\.vn\/SinhVien\.aspx\?(.*)pid=211/;
@@ -84,10 +84,11 @@ javascript: (function gpa() {
                     note: $(tds[6]).text().trim().normalize(),
                     include: true,
                     whyExclude: "",
-                    isAbsent: $(tds[5]).text().trim().normalize() == "Vắng"
+                    isAbsent: $(tds[5]).text().trim().normalize() == "Vắng",
+                    letter:""
                 };
 
-                $(rows[i]).attr("id", row.id); // Get id of course in table even if it is sorted
+                $(rows[i]).attr("id", row.id); // Get id of the course in table even if it is sorted
 
                 if (!row.credit) {
                     row.credit = 0;
@@ -135,6 +136,36 @@ javascript: (function gpa() {
         }
     }
 
+    function addLetterGrade()
+    {
+        let letterGrade = [
+            { score: 9, letter: "A+" },
+            { score: 8.5, letter: "A." },
+            { score: 8, letter: "B+" },
+            { score: 7, letter: "B." },
+            { score: 6.5, letter: "C+" },
+            { score: 5.5, letter: "C." },
+            { score: 5, letter: "D+" },
+            { score: 4, letter: "D." },
+            { score: 0, letter: "F" }
+        ];
+
+        data.forEach(item => {
+            if (item.score >= 0)
+                item.letter = letterGrade.find(grade => item.score >= grade.score).letter;
+        });
+
+        if ($('#tbDiemThiGK thead tr th:contains("Điểm chữ")').length === 0)
+        {
+            $('th:eq(5)', '#tbDiemThiGK thead tr').after('<th>Điểm chữ</th>');
+            $('#tbDiemThiGK tbody tr').each(function() {
+                let letterGrade = data[$(this).attr("id") - 1].letter;
+                $('td:eq(5)', this).after('<td>' + letterGrade + '</td>');
+            });
+        } 
+        
+    }
+
     class Calculation {
         constructor() {
             this.totalCredits = 0;
@@ -147,7 +178,7 @@ javascript: (function gpa() {
         }
 
         calculateGPA () {
-            //console.clear();
+            //;
 
             let howICalculated = "%c Điểm tính thế nào nhở ?%c \n\n";
             let cssLog = ["font-size:16px", "font-size:normal"];
@@ -218,14 +249,14 @@ javascript: (function gpa() {
             let headTr = tab.find("thead tr")[0];
             let headTh = $($(headTr).find("th")[0]).clone();
 
-            if ($(headTr).find("th").length < 8) { // First time calculate GPA. Insert checkbox column.
+            if ($(headTr).find("th").length < 9) { // First time calculate GPA. Insert checkbox column.
 
                 $(headTh).attr("title", "Tính hay không tính học phần này trong GPA");
                 $(headTh).children().html("Trong GPA");
                 $(headTr).prepend(headTh);
 
                 for (let i = 0; i < rows.length; i++) {
-                    $(rows[i]).prepend('<td class= "center gpa-checkbox" style="width:60px;" ><input type="checkbox"' + ((data[i].include) ? " checked " : "") + ' />' + '<div hidden>' + ((data[i].include) ? 1 : 0) + '</div></td>');
+                    $(rows[i]).prepend('<td class= "center gpa-checkbox" style="width:60px;" ><input type="checkbox"' + ((data[i].include) ? " checked " : "") + ' />' + '<div hidden>' + ((data[i].include) ? 1 : 0) + '</div></td>'); // Use hidden div to enable sorting checkbox column
                 }
             }
 
@@ -247,7 +278,8 @@ javascript: (function gpa() {
             $(gpaTableHead).append(gpaHeadCol2);
 
             $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình tích lũy (GPA)</td><td class="center gpa" id="calGPA"><b>' + this.gpa + '</b></td></tr>');
-            $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình học tập</td><td class="center gpa" id="calGPA"><b>' + this.notPassGPA + '</b></td></tr>');
+            $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình tích lũy (GPA) hệ 4</td><td class="center gpa" id="calGPA"><b>' + (this.gpa * 4 / 10) + '</b></td></tr>');
+            $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình học tập</td><td class="center gpa" id="calGPA">' + this.notPassGPA + '</td></tr>');
             $(gpaTableBody).append('<tr class="even"><td class="left">Tổng tín chỉ đã tích luỹ</td><td class="center gpa" id="calSumCredit">' + this.totalCredits + ' tín chỉ</td></tr>');
             $(gpaTableBody).append('<tr class="odd"><td class="left">Tổng điểm đã tích lũy</td><td class="center gpa" id="sumScore">' + this.totalScores + '</td></tr>');
             $(gpaTableBody).append('<tr class="even"><td class="left">Sô học phần đã học</td><td class="center gpa" id="sumCourse">' + data.length + ' học phần</td></tr>');
@@ -295,6 +327,7 @@ javascript: (function gpa() {
     }
 
     initUserCourseData();
+    addLetterGrade();
     let cal = new Calculation();
     cal.calculateGPA();
     cal.formatCoursesTableAndCreateResultTable();
@@ -306,6 +339,7 @@ javascript: (function gpa() {
     })
 
     // When change state of a course, recalculate GPA. Use on() instead of click() to apply on future created checkbox in DataTable
+    $('#tbDiemThiGK').off('change', 'input[type="checkbox"]'); // In case user re-run this bookmarklet
     $('#tbDiemThiGK').on('change', 'input[type="checkbox"]', function () {
         let courseRow = $(this).closest("tr");
         let idCourse = $(courseRow).attr("id");
@@ -315,10 +349,7 @@ javascript: (function gpa() {
         $(this).siblings().first().text( $(this).is(":checked") ? 1 : 0); // Change value of hidden div for sorting
         $(htmlCheckBox).attr("checked", $(this).is(":checked"));
 
-        console.log(courseRow.children().first().html());
-        console.log(htmlCheckBox.checked)
-
-        tab.fnUpdate( courseRow.children().first().html(), courseRow[0], 0, false, false ); // Update checked status in DataTable
+        tab.fnUpdate( courseRow.children().first().html(), courseRow[0], 0, false, false ); // Update html of checkbox in DataTable
 
         cal = new Calculation();
         cal.calculateGPA();
@@ -326,10 +357,11 @@ javascript: (function gpa() {
     });
 
     // Create a button to save courses list to file
+    let saveButton;
     if ( !$('#saveCoursesList')[0])
     {
         let saveCoursesList = new SaveCoursesList();
-        let saveButton = $('#ob_iBbtnXemDiemThiContainer').clone().attr("id", "saveCoursesList");
+        saveButton = $('#ob_iBbtnXemDiemThiContainer').clone().attr("id", "saveCoursesList");
         $(saveButton).attr("style", "width: 25%");
         $(saveButton).css({'margin-bottom': '10px'});
         $($(saveButton).find(".ob_iBC")[0]).text("Lưu danh sách học phần đã chọn");
@@ -337,6 +369,22 @@ javascript: (function gpa() {
         $(saveButton).click(function (event) {
             event.preventDefault();
             saveCoursesList.saveToFileCSV();
+        });
+    }
+
+    // Create a button to toggle letter grade
+    if ( !$('#toggleLetterGrade')[0])
+    {
+        let toggleButton = $(saveButton).clone().attr("id", "toggleLetterGrade");
+        $(toggleButton).attr("style", "width: 25%");
+        $(toggleButton).css({'margin-bottom': '10px'});
+        $($(toggleButton).find(".ob_iBC")[0]).text("Hiện/Ẩn điểm chữ");
+        $(saveButton).after(toggleButton);
+
+        $(toggleButton).click(function (event) {
+            event.preventDefault();
+            let isVisible = tab.fnSettings().aoColumns[7].bVisible;
+            tab.fnSetColumnVis(7, !isVisible);
         });
     }
 })();
