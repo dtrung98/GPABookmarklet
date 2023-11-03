@@ -147,7 +147,7 @@ javascript: (function gpa() {
         }
 
         calculateGPA () {
-            console.clear();
+            //console.clear();
 
             let howICalculated = "%c Điểm tính thế nào nhở ?%c \n\n";
             let cssLog = ["font-size:16px", "font-size:normal"];
@@ -222,11 +222,10 @@ javascript: (function gpa() {
 
                 $(headTh).attr("title", "Tính hay không tính học phần này trong GPA");
                 $(headTh).children().html("Trong GPA");
-
                 $(headTr).prepend(headTh);
 
                 for (let i = 0; i < rows.length; i++) {
-                    $(rows[i]).prepend('<td class= "center gpa-checkbox" style="width:60px;" ><input type="checkbox"' + ((data[i].include) ? " checked " : "") + ' /></td>');
+                    $(rows[i]).prepend('<td class= "center gpa-checkbox" style="width:60px;" ><input type="checkbox"' + ((data[i].include) ? " checked " : "") + ' />' + '<div hidden>' + ((data[i].include) ? 1 : 0) + '</div></td>');
                 }
             }
 
@@ -299,12 +298,27 @@ javascript: (function gpa() {
     let cal = new Calculation();
     cal.calculateGPA();
     cal.formatCoursesTableAndCreateResultTable();
+    tab.dataTable().fnDestroy();
+    tab.dataTable({
+        "bPaginate": false,
+        "aaSorting": [[1, "asc"]],
+        "bJQueryUI": true,
+    })
 
-    // When deselect a course, recalculate GPA
-    $('input[type="checkbox"]').change(function () {
+    // When change state of a course, recalculate GPA. Use on() instead of click() to apply on future created checkbox in DataTable
+    $('#tbDiemThiGK').on('change', 'input[type="checkbox"]', function () {
         let courseRow = $(this).closest("tr");
         let idCourse = $(courseRow).attr("id");
+        let htmlCheckBox = $(courseRow).find("input[type='checkbox']");
+
         data[idCourse - 1].include = $(this).is(":checked");
+        $(this).siblings().first().text( $(this).is(":checked") ? 1 : 0); // Change value of hidden div for sorting
+        $(htmlCheckBox).attr("checked", $(this).is(":checked"));
+
+        console.log(courseRow.children().first().html());
+        console.log(htmlCheckBox.checked)
+
+        tab.fnUpdate( courseRow.children().first().html(), courseRow[0], 0, false, false ); // Update checked status in DataTable
 
         cal = new Calculation();
         cal.calculateGPA();
