@@ -24,7 +24,7 @@ javascript: (function gpa() {
         param['ctl00$ContentPlaceHolder1$ctl00$cboNamHoc_gvDKHPLichThi'] = '0';
         param['ctl00$ContentPlaceHolder1$ctl00$cboHocKy_gvDKHPLichThi$ob_CbocboHocKy_gvDKHPLichThiTB'] = '0';
         param['ctl00$ContentPlaceHolder1$ctl00$cboHocKy_gvDKHPLichThi$ob_CbocboHocKy_gvDKHPLichThiSIS'] = '0';
-        param['ctl00$ContentPlaceHolder1$ctl00$cboHocKy_gvDKHPLichThi'] = '1';
+        param['ctl00$ContentPlaceHolder1$ctl00$cboHocKy_gvDKHPLichThi'] = ''; // Currently this need to be empty to load "Tất cả" option properly
         param['ctl00$ContentPlaceHolder1$ctl00$btnXemDiemThi'] = 'Xem Kết Quả Học Tập';
 
         const parentDiv = $("#lich-thi-dkhp")[0];
