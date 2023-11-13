@@ -1,5 +1,5 @@
-javascript: (function gpa() {
-    //console.clear()
+javascript: (async function gpa() {
+    console.clear()
 
     const currentHref = window.location.href;
     const dkhpReg = /.portal([1-9]|)\.hcmus\.edu\.vn\/SinhVien\.aspx\?(.*)pid=211/;
@@ -17,46 +17,57 @@ javascript: (function gpa() {
     if (semeterInput) semeterInput = semeterInput[0];
     else return;
 
-    const isSemeterDisabled = $(semeterInput).attr('disabled') || $(semeterInput).prop('disabled');
-    if (!isAllSection || isSemeterDisabled) {
-        param['ctl00$ContentPlaceHolder1$ctl00$cboNamHoc_gvDKHPLichThi$ob_CbocboNamHoc_gvDKHPLichThiTB'] = '--Tất cả--';
-        param['ctl00$ContentPlaceHolder1$ctl00$cboNamHoc_gvDKHPLichThi$ob_CbocboNamHoc_gvDKHPLichThiSIS'] = '0';
-        param['ctl00$ContentPlaceHolder1$ctl00$cboNamHoc_gvDKHPLichThi'] = '0';
-        param['ctl00$ContentPlaceHolder1$ctl00$cboHocKy_gvDKHPLichThi$ob_CbocboHocKy_gvDKHPLichThiTB'] = '0';
-        param['ctl00$ContentPlaceHolder1$ctl00$cboHocKy_gvDKHPLichThi$ob_CbocboHocKy_gvDKHPLichThiSIS'] = '0';
-        param['ctl00$ContentPlaceHolder1$ctl00$cboHocKy_gvDKHPLichThi'] = ''; // Currently this need to be empty to load "Tất cả" option properly
-        param['ctl00$ContentPlaceHolder1$ctl00$btnXemDiemThi'] = 'Xem Kết Quả Học Tập';
+    function goToAllCoursesPage()
+    {
+        const isSemeterDisabled = $(semeterInput).attr('disabled') || $(semeterInput).prop('disabled');
+        if (!isAllSection || isSemeterDisabled) {
+            console.log("Go to all section");
+            param['ctl00$ContentPlaceHolder1$ctl00$cboNamHoc_gvDKHPLichThi$ob_CbocboNamHoc_gvDKHPLichThiTB'] = '--Tất cả--';
+            param['ctl00$ContentPlaceHolder1$ctl00$cboNamHoc_gvDKHPLichThi$ob_CbocboNamHoc_gvDKHPLichThiSIS'] = '0';
+            param['ctl00$ContentPlaceHolder1$ctl00$cboNamHoc_gvDKHPLichThi'] = '0';
+            param['ctl00$ContentPlaceHolder1$ctl00$cboHocKy_gvDKHPLichThi$ob_CbocboHocKy_gvDKHPLichThiTB'] = '0';
+            param['ctl00$ContentPlaceHolder1$ctl00$cboHocKy_gvDKHPLichThi$ob_CbocboHocKy_gvDKHPLichThiSIS'] = '0';
+            param['ctl00$ContentPlaceHolder1$ctl00$cboHocKy_gvDKHPLichThi'] = ''; // Currently this need to be empty to load "Tất cả" option properly
+            param['ctl00$ContentPlaceHolder1$ctl00$btnXemDiemThi'] = 'Xem Kết Quả Học Tập';
+    
+            const parentDiv = $("#lich-thi-dkhp")[0];
+            if (parentDiv && !$("#loading-text")[0])
+                parentDiv.prepend($('<div id="loading-text" style="font-size:20px; color:#1B486A;text-align:center;margin:10px;">Chờ một chút...</div>')[0]);
 
-        const parentDiv = $("#lich-thi-dkhp")[0];
-        if (parentDiv && !$("#loading-text")[0])
-            parentDiv.prepend($('<div id="loading-text" style="font-size:20px; color:#1B486A;text-align:center;margin:10px;">Chờ một chút...</div>')[0]);
-        $.ajax({
-            type: "POST",
-            url: "/SinhVien.aspx?pid=211",
-            data: param,
-            success: function (res) {
-                let html = $.parseHTML(res);
-                let HK = $(html).find("input[name='ctl00$ContentPlaceHolder1$ctl00$cboNamHoc_gvDKHPLichThi$ob_CbocboNamHoc_gvDKHPLichThiTB']");
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    type: "POST",
+                    url: "/SinhVien.aspx?pid=211",
+                    data: param,
+                    success: function (res) {
+                        let html = $.parseHTML(res);
+                        let HK = $(html).find("input[name='ctl00$ContentPlaceHolder1$ctl00$cboNamHoc_gvDKHPLichThi$ob_CbocboNamHoc_gvDKHPLichThiTB']");
+        
+                        if (HK)
+                            console.log($(HK[0]).attr("value"));
 
-                if (HK)
-                    console.log($(HK[0]).attr("value"));
-
-                var newDoc = document.open("text/html", "replace");
-                newDoc.write(res);
-                newDoc.close();
-                gpa();
-            },
-
-        });
-        return;
+                        document.open();
+                        document.write(res);
+                        document.close();
+                        window.onload = () => {
+                            console.log("Loaded");
+                            resolve();
+                        }
+                    }
+                });
+            });
+        }
     }
 
-    let tab = $("#tbDiemThiGK");
+    let tab = null;
     let exceptData = [];
     let data = [];
     let rows = null;
 
     function initUserCourseData() {
+
+        console.log( $("body").html());
+        console.log("Initing");
 
         const exceptCourses = [
             "Anh văn",
@@ -66,7 +77,8 @@ javascript: (function gpa() {
             "Giao duc quoc phong",
             "The duc"
         ];
-
+        tab = $("#tbDiemThiGK");
+        
         if (tab) {
             let mainTable = tab[0];
             rows = tab.find("tbody tr");
@@ -326,6 +338,9 @@ javascript: (function gpa() {
         }
     }
 
+    //$('#ctl00_ContentPlaceHolder1_ctl00_searchResult').before('<input type="checkbox" id="isSemesterCal"><label for="isSemesterCal>Tính theo học kỳ</label><br><br>');
+
+    await goToAllCoursesPage(); console.log("Calling finished");
     initUserCourseData();
     addLetterGrade();
     let cal = new Calculation();
