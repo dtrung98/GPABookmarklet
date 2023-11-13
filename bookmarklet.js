@@ -325,16 +325,28 @@ javascript: (async function gpa() {
 
     class SaveCoursesList 
     {
-        constructor() {
+        constructor(data, cal) {
             this.data = data;
+            this.cal = cal; 
         }
 
         saveToFileCSV() {
-            let csv = 'Tên môn học, Số tín chỉ, Điểm, Học kỳ, Lớp, Ghi chú\n';
+            let idxRow = -1;
+            let csv = 'Tên môn học, Số tín chỉ, Điểm, Điểm chữ, Học kỳ, Lớp, Ghi chú\n';
             this.data.forEach(function (row) {
-                if (row.include)
-                    csv += row.course + ', ' + row.credit + ', ' + row.score + ', ' + row.semester + ', ' + row.class + ', ' + row.note + '\n';
+                if (row.include) {
+                    csv += row.course + ', ' + row.credit + ', ' + row.score + ', ' + row.letter + ', ' + row.semester + ', ' + row.class + ', ' + row.note + '\n';
+                    idxRow++;
+                }
             });
+            
+            csv += "Số tín chỉ tích lũy: " + this.cal.totalCredits + "\n";
+            csv += "Tổng điểm tích lũy: " + this.cal.totalScores + "\n";
+            csv += "Tổng học phần: " + this.data.length + "\n";
+            csv += "Tổng học phần trong GPA: " + (this.data.length - this.cal.removedCoursesSize) + "\n";
+            csv += "Điểm trung bình tích lũy (GPA): " + this.cal.gpa + "\n";
+            csv += "Điểm trung bình tích lũy (GPA) hệ 4: " + (this.cal.gpa * 4 / 10) + "\n";
+            csv += "Điểm trung bình học tập: " + this.cal.notPassGPA + "\n";
 
             let hiddenElement = document.createElement('a');
             hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent('\uFEFF' + csv);
@@ -381,7 +393,7 @@ javascript: (async function gpa() {
     let saveButton;
     if ( !$('#saveCoursesList')[0])
     {
-        let saveCoursesList = new SaveCoursesList();
+        let saveCoursesList = new SaveCoursesList(data, cal);
         saveButton = $('#ob_iBbtnXemDiemThiContainer').clone().attr("id", "saveCoursesList");
         $(saveButton).attr("style", "width: 25%");
         $(saveButton).css({'margin-bottom': '10px'});
