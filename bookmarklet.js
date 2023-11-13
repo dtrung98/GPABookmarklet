@@ -21,7 +21,6 @@ javascript: (async function gpa() {
     {
         const isSemeterDisabled = $(semeterInput).attr('disabled') || $(semeterInput).prop('disabled');
         if (!isAllSection || isSemeterDisabled) {
-            console.log("Go to all section");
             param['ctl00$ContentPlaceHolder1$ctl00$cboNamHoc_gvDKHPLichThi$ob_CbocboNamHoc_gvDKHPLichThiTB'] = '--Tất cả--';
             param['ctl00$ContentPlaceHolder1$ctl00$cboNamHoc_gvDKHPLichThi$ob_CbocboNamHoc_gvDKHPLichThiSIS'] = '0';
             param['ctl00$ContentPlaceHolder1$ctl00$cboNamHoc_gvDKHPLichThi'] = '0';
@@ -49,10 +48,19 @@ javascript: (async function gpa() {
                         document.open();
                         document.write(res);
                         document.close();
+
+                        let isLoaded = false;
                         window.onload = () => {
-                            console.log("Loaded");
+                            isLoaded = true;
                             resolve();
                         }
+
+                        // In case window.onload failed!
+                        setTimeout(() => {
+                            if (!isLoaded) {
+                                resolve();
+                            }
+                        }, 2000);
                     }
                 });
             });
@@ -63,11 +71,9 @@ javascript: (async function gpa() {
     let exceptData = [];
     let data = [];
     let rows = null;
+    let isCalSemester = localStorage.getItem("isCalSemester");
 
     function initUserCourseData() {
-
-        console.log( $("body").html());
-        console.log("Initing");
 
         const exceptCourses = [
             "Anh văn",
@@ -78,7 +84,7 @@ javascript: (async function gpa() {
             "The duc"
         ];
         tab = $("#tbDiemThiGK");
-        
+
         if (tab) {
             let mainTable = tab[0];
             rows = tab.find("tbody tr");
@@ -340,7 +346,7 @@ javascript: (async function gpa() {
 
     //$('#ctl00_ContentPlaceHolder1_ctl00_searchResult').before('<input type="checkbox" id="isSemesterCal"><label for="isSemesterCal>Tính theo học kỳ</label><br><br>');
 
-    await goToAllCoursesPage(); console.log("Calling finished");
+    if (isCalSemester != "true") await goToAllCoursesPage();
     initUserCourseData();
     addLetterGrade();
     let cal = new Calculation();
@@ -402,4 +408,17 @@ javascript: (async function gpa() {
             tab.fnSetColumnVis(7, !isVisible);
         });
     }
+
+    // Create a button to toggle semester calculation
+    if ( !$("#isCalSemester")[0]) {
+        let checkbox = $('<input type="checkbox" id="isCalSemester"><label for="isCalSemester"> Tính theo học kỳ</label><br><br>');
+
+        if (isCalSemester == "true") $(checkbox).attr("checked", true);
+        $('#ctl00_ContentPlaceHolder1_pnlControls div:first').after(checkbox);
+
+        $('#isCalSemester').change(function () {
+            localStorage.setItem("isCalSemester", $(this).is(":checked"));
+        });
+    }
+
 })();
