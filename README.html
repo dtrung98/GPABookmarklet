@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>README</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1 id="hcmus-gpa-calculator-bookmarklet-v-2.0.0">HCMUS GPA Calculator
+Bookmarklet (v 2.0.0)</h1>
+<p>Add a feature to Hcmus Portal, calculate and show your GPA</p>
+<h2 id="what-is-this">What is this?</h2>
+<p>This is a forked version of GPABookmarlet utility, which is created
+by <a href="https://github.com/dtrung98/GPABookmarklet">dtrung98’s
+repository</a>.</p>
+<p>It has been 4 years since the last updated of original repository,
+and unfortunately I observed a bug comes from Portal itself which this
+bookmarklet need to deal with. Although they are not computation bugs
+(which will be more severe), but they can cause some confusion for user.
+Recently the portal is receiving frequenly updating, so I think there
+should be a consistent maintenance for GPABookmarklet to cope with those
+changings 😢.</p>
+<p>Besides that, I also add some minor modifications to this bookmaklet
+for <del>my</del> user’s convenience 😆.</p>
+<h2 id="list-of-bugs-fixed">List of bugs fixed</h2>
+<ul>
+<li><p><del>Deal with a bug comes from Portal, which duplicate some
+graded courses (GPABookmarklet takes all of duplication for
+computing).</del></p>
+<ul>
+<li>Update: This bug has been solved on my portal page, so I cannot
+implement this fixing anymore 😶.</li>
+</ul>
+<p><br></p></li>
+<li><p>The bookmarklet loads the page of full courses and calculate on
+this page. However, this page may be filled with ungraded courses
+(although those courses have been). Currently this is a problem for
+students who took part in the last summer semester.</p>
+<ul>
+<li>Update: Just found and deleted a letter “1” in source code and done!
+😀</li>
+</ul>
+<figure>
+<img src="Figure/Fix_Bug_1.png" alt="Bug 1" />
+<figcaption aria-hidden="true">Bug 1</figcaption>
+</figure>
+<p><br></p></li>
+<li><p>Checkbox for selecting/unselecting a course to be included in GPA
+does not work.</p>
+<ul>
+<li>Update: I am not sure whether the author just decide to remove that
+functionality for some mysterious reason or not. But I found that this
+feature is quite useful so I just reimplement it carefully such that it
+will not conflict with normarl grading calculation 🫣.</li>
+</ul>
+<figure>
+<img src="Figure/Fix_Bug_2.gif" alt="Bug 2" />
+<figcaption aria-hidden="true">Bug 2</figcaption>
+</figure>
+<p><br></p></li>
+</ul>
+<h2 id="list-of-minor-modification">List of minor modification</h2>
+<ul>
+<li><p>Calculate “<strong>Điểm trung bình học tập</strong>” (includes
+courses that student has not passed).</p>
+<figure>
+<img src="Figure/Modification_1.png" alt="Feat 1" />
+<figcaption aria-hidden="true">Feat 1</figcaption>
+</figure>
+<p><br></p></li>
+<li><p>Add <strong>Letter grade</strong> and <strong>4.0 grade</strong>
+systems.</p>
+<figure>
+<img src="Figure/Modification_2.png" alt="Feat 2" />
+<figcaption aria-hidden="true">Feat 2</figcaption>
+</figure>
+<figure>
+<img src="Figure/Modification_2_1.gif" alt="Feat 2" />
+<figcaption aria-hidden="true">Feat 2</figcaption>
+</figure>
+<p><br></p></li>
+<li><p>You want to save all courses to PC for further analysing, but do
+not want to type all of them manually? Just click the button “Lưu danh
+sách học phần đã chọn” and get them as <code>csv</code> file.</p>
+<figure>
+<img src="Figure/Modification_3.gif" alt="Feat 3" />
+<figcaption aria-hidden="true">Feat 3</figcaption>
+</figure>
+<p><br></p></li>
+<li><p>Enabel sorting courses by the “<code>Trong GPA</code>”
+column.</p>
+<figure>
+<img src="Figure/Modification_4.gif" alt="Feat 4" />
+<figcaption aria-hidden="true">Feat 4</figcaption>
+</figure>
+<p><br></p></li>
+<li><p>Enable searching courses in the table.</p>
+<figure>
+<img src="Figure/Modification_5.gif" alt="Feat 5" />
+<figcaption aria-hidden="true">Feat 5</figcaption>
+</figure></li>
+<li><p>Enalble “Tính theo học kỳ” option. If you want to calculate for
+each semester, check this option before go to that semester page and run
+the GPABookmarklet. Or else unchecking it for calculating otherwise
+(Bookmarklet remembers this option until you deleted cookies).</p>
+<figure>
+<img src="Figure/Modification_6.png" alt="Feat 6" />
+<figcaption aria-hidden="true">Feat 6</figcaption>
+</figure></li>
+</ul>
+<h2 id="bugs">Bugs</h2>
+<ul>
+<li>Sometimes enabling the letter/4 grade system causes wrong format.
+You should re-run the GPABookmarklet to see if that can be fixed.</li>
+</ul>
+<h2 id="guideline">Guideline</h2>
+<ul>
+<li>Step 1: You must be a HCMUS Student.</li>
+<li>Step 2: Click <strong><a
+href="https://dreamywanderer.github.io/GPABookmarklet_Maintanence/">this
+link</a></strong> to know more</li>
+</ul>
+<pre><code>https://dreamywanderer.github.io/GPABookmarklet_Maintanence/</code></pre>
+</body>
+</html>

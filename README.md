@@ -77,8 +77,8 @@ Besides that, I also add some minor modifications to this bookmaklet for ~~my~~ 
 ## Guideline
 
 - Step 1: You must be a HCMUS Student.
-- Step 2: Click **[this link](https://dtrung98.github.io/GPABookmarklet)** to know more
+- Step 2: Click **[this link](https://dreamywanderer.github.io/GPABookmarklet_Maintanence/)** to know more
 
 ````
-https://dtrung98.github.io/GPABookmarklet
+https://dreamywanderer.github.io/GPABookmarklet_Maintanence/
 ````
