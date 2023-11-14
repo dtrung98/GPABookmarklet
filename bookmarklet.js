@@ -83,6 +83,8 @@ javascript: (async function gpa() {
             "Anh văn",
             "Giáo dục quốc phòng",
             "Thể dục",
+            "Tin học cơ sở",
+            "Tin hoc co so",
             "Anh van",
             "Giao duc quoc phong",
             "The duc"

@@ -70,6 +70,8 @@ Besides that, I also add some minor modifications to this bookmaklet for ~~my~~ 
 
   ![Feat 6](Figure/Modification_6.png)
 
+- Add "Tin học cơ sở" to list of courses that must not to be included in GPA. Thanks for **[vkhuy's repository](https://github.com/vkhuy/GPABookmarklet)** for this finding.
+
 ## Bugs
 
 - Sometimes enabling the letter/4 grade system causes wrong format. You should re-run the GPABookmarklet to see if that can be fixed.
