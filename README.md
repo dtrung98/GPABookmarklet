@@ -16,9 +16,15 @@ Besides that, I also add some minor modifications to this bookmaklet for ~~my~~ 
 
   - Update: This bug has been solved on my portal page, so I cannot implement this fixing anymore 😶.
 
+  <br>
+
 - The bookmarklet loads the page of full courses and calculate on this page. However, this page may be filled with ungraded courses (although those courses have been). Currently this is a problem for students who took part in the last summer semester.
 
   - Update: Just found and deleted a letter "1" in source code and done! 😀
+
+  ![Bug 1](Figure/Fix_Bug_1.png)
+
+  <br>
 
 - Checkbox for selecting/unselecting a course to be included in GPA does not work.
 

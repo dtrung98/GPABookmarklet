@@ -71,6 +71,7 @@ javascript: (async function gpa() {
     let data = [];
     let rows = null;
     let isCalSemester = localStorage.getItem("isCalSemester");
+    let isRunBookmarkAgain = false;
 
     function initUserCourseData() {
 
@@ -285,8 +286,10 @@ javascript: (async function gpa() {
             let headTr = tab.find("thead tr")[0];
             let headTh = $($(headTr).find("th")[0]).clone();
 
-            if ($(headTr).find("th").length < 10) { // First time calculate GPA. Insert checkbox column.
+            if (isRunBookmarkAgain == false) { // First time calculate GPA. Insert checkbox column.
 
+                isRunBookmarkAgain = true;
+                
                 $(headTh).attr("title", "Tính hay không tính học phần này trong GPA");
                 $(headTh).children().html("Trong GPA");
                 $(headTr).prepend(headTh);
