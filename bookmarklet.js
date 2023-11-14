@@ -19,52 +19,51 @@ javascript: (async function gpa() {
 
     function goToAllCoursesPage()
     {
-        const isSemeterDisabled = $(semeterInput).attr('disabled') || $(semeterInput).prop('disabled');
-        if (!isAllSection || isSemeterDisabled) {
-            param['ctl00$ContentPlaceHolder1$ctl00$cboNamHoc_gvDKHPLichThi$ob_CbocboNamHoc_gvDKHPLichThiTB'] = '--Tất cả--';
-            param['ctl00$ContentPlaceHolder1$ctl00$cboNamHoc_gvDKHPLichThi$ob_CbocboNamHoc_gvDKHPLichThiSIS'] = '0';
-            param['ctl00$ContentPlaceHolder1$ctl00$cboNamHoc_gvDKHPLichThi'] = '0';
-            param['ctl00$ContentPlaceHolder1$ctl00$cboHocKy_gvDKHPLichThi$ob_CbocboHocKy_gvDKHPLichThiTB'] = '0';
-            param['ctl00$ContentPlaceHolder1$ctl00$cboHocKy_gvDKHPLichThi$ob_CbocboHocKy_gvDKHPLichThiSIS'] = '0';
-            param['ctl00$ContentPlaceHolder1$ctl00$cboHocKy_gvDKHPLichThi'] = ''; // Currently this need to be empty to load "Tất cả" option properly
-            param['ctl00$ContentPlaceHolder1$ctl00$btnXemDiemThi'] = 'Xem Kết Quả Học Tập';
+        //const isSemeterDisabled = $(semeterInput).attr('disabled') || $(semeterInput).prop('disabled');
+        //if (!isAllSection || isSemeterDisabled) {
+        param['ctl00$ContentPlaceHolder1$ctl00$cboNamHoc_gvDKHPLichThi$ob_CbocboNamHoc_gvDKHPLichThiTB'] = '--Tất cả--';
+        param['ctl00$ContentPlaceHolder1$ctl00$cboNamHoc_gvDKHPLichThi$ob_CbocboNamHoc_gvDKHPLichThiSIS'] = '0';
+        param['ctl00$ContentPlaceHolder1$ctl00$cboNamHoc_gvDKHPLichThi'] = '0';
+        param['ctl00$ContentPlaceHolder1$ctl00$cboHocKy_gvDKHPLichThi$ob_CbocboHocKy_gvDKHPLichThiTB'] = '0';
+        param['ctl00$ContentPlaceHolder1$ctl00$cboHocKy_gvDKHPLichThi$ob_CbocboHocKy_gvDKHPLichThiSIS'] = '0';
+        param['ctl00$ContentPlaceHolder1$ctl00$cboHocKy_gvDKHPLichThi'] = ''; // Currently this need to be empty to load "Tất cả" option properly
+        param['ctl00$ContentPlaceHolder1$ctl00$btnXemDiemThi'] = 'Xem Kết Quả Học Tập';
+
+        const parentDiv = $("#lich-thi-dkhp")[0];
+        if (parentDiv && !$("#loading-text")[0])
+            parentDiv.prepend($('<div id="loading-text" style="font-size:20px; color:#1B486A;text-align:center;margin:10px;">Chờ một chút...</div>')[0]);
+
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                type: "POST",
+                url: "/SinhVien.aspx?pid=211",
+                data: param,
+                success: function (res) {
+                    let html = $.parseHTML(res);
+                    let HK = $(html).find("input[name='ctl00$ContentPlaceHolder1$ctl00$cboNamHoc_gvDKHPLichThi$ob_CbocboNamHoc_gvDKHPLichThiTB']");
     
-            const parentDiv = $("#lich-thi-dkhp")[0];
-            if (parentDiv && !$("#loading-text")[0])
-                parentDiv.prepend($('<div id="loading-text" style="font-size:20px; color:#1B486A;text-align:center;margin:10px;">Chờ một chút...</div>')[0]);
+                    if (HK)
+                        console.log($(HK[0]).attr("value"));
 
-            return new Promise((resolve, reject) => {
-                $.ajax({
-                    type: "POST",
-                    url: "/SinhVien.aspx?pid=211",
-                    data: param,
-                    success: function (res) {
-                        let html = $.parseHTML(res);
-                        let HK = $(html).find("input[name='ctl00$ContentPlaceHolder1$ctl00$cboNamHoc_gvDKHPLichThi$ob_CbocboNamHoc_gvDKHPLichThiTB']");
-        
-                        if (HK)
-                            console.log($(HK[0]).attr("value"));
+                    document.open();
+                    document.write(res);
+                    document.close();
 
-                        document.open();
-                        document.write(res);
-                        document.close();
+                    let isLoaded = false;
+                    window.onload = () => {
+                        isLoaded = true;
+                        resolve();
+                    }
 
-                        let isLoaded = false;
-                        window.onload = () => {
-                            isLoaded = true;
+                    // In case window.onload failed!
+                    setTimeout(() => {
+                        if (!isLoaded) {
                             resolve();
                         }
-
-                        // In case window.onload failed!
-                        setTimeout(() => {
-                            if (!isLoaded) {
-                                resolve();
-                            }
-                        }, 2000);
-                    }
-                });
+                    }, 2000);
+                }
             });
-        }
+        });
     }
 
     let tab = null;
@@ -103,7 +102,8 @@ javascript: (async function gpa() {
                     include: true,
                     whyExclude: "",
                     isAbsent: $(tds[5]).text().trim().normalize() == "Vắng",
-                    letter:""
+                    letter:"",
+                    fourRounding: 0
                 };
 
                 $(rows[i]).attr("id", row.id); // Get id of the course in table even if it is sorted
@@ -154,33 +154,47 @@ javascript: (async function gpa() {
         }
     }
 
-    function addLetterGrade()
+    function addSupplementaryGrade()
     {
-        let letterGrade = [
-            { score: 9, letter: "A+" },
-            { score: 8.5, letter: "A." },
-            { score: 8, letter: "B+" },
-            { score: 7, letter: "B." },
-            { score: 6.5, letter: "C+" },
-            { score: 5.5, letter: "C." },
-            { score: 5, letter: "D+" },
-            { score: 4, letter: "D." },
-            { score: 0, letter: "F" }
+        let supplementaryGrade = [
+            { score: 9, letter: "A+", fourRounding: 4.0},
+            { score: 8, letter: "A.", fourRounding: 3.5},
+            { score: 7, letter: "B+", fourRounding: 3.0},
+            { score: 6, letter: "B.", fourRounding: 2.5},
+            { score: 5, letter: "C.", fourRounding: 2.0},
+            { score: 4, letter: "D+", fourRounding: 1.5},
+            { score: 3, letter: "D.", fourRounding: 1.0},
+            { score: 0, letter: "F.", fourRounding: 0.0}
         ];
 
         data.forEach(item => {
-            if (item.score >= 0)
-                item.letter = letterGrade.find(grade => item.score >= grade.score).letter;
+            if (item.score >= 0) {
+                item.letter = supplementaryGrade.find(grade => item.score >= grade.score).letter;
+                item.fourRounding = supplementaryGrade.find(grade => item.score >= grade.score).fourRounding;
+            }
         });
 
-        if ($('#tbDiemThiGK thead tr th:contains("Điểm chữ")').length === 0)
+        if ($('#tbDiemThiGK thead tr th:contains("Thang chữ")').length === 0)
         {
-            $('th:eq(5)', '#tbDiemThiGK thead tr').after('<th>Điểm chữ</th>');
+            $('th:eq(5)', '#tbDiemThiGK thead tr').after('<th>Thang chữ</th>');
             $('#tbDiemThiGK tbody tr').each(function() {
                 let letterGrade = data[$(this).attr("id") - 1].letter;
                 $('td:eq(5)', this).after('<td>' + letterGrade + '</td>');
             });
         } 
+
+        console.log( $(tab).html());
+
+        if ($('#tbDiemThiGK thead tr th:contains("Thang 4")').length === 0)
+        {
+            $('th:eq(6)', '#tbDiemThiGK thead tr').after('<th>Thang 4</th>');  
+            $('#tbDiemThiGK tbody tr').each(function() {
+                let fourRounding = data[$(this).attr("id") - 1].fourRounding;
+                $('td:eq(6)', this).after('<td>' + fourRounding + '</td>');
+            });
+        } 
+
+        console.log( $(tab).html());
         
     }
 
@@ -189,8 +203,10 @@ javascript: (async function gpa() {
             this.totalCredits = 0;
             this.notPassCredits = 0;
             this.totalScores = 0;
+            this.totalFourScores = 0;
             this.notPassTotalScore = 0;
             this.gpa = 0;
+            this.fourGPA = 0;
             this.notPassGPA = 0;
             this.removedCoursesSize = 0;
         }
@@ -206,6 +222,7 @@ javascript: (async function gpa() {
                 if (item.include) {
                     this.totalCredits += item.credit;
                     this.totalScores += item.credit * item.score;
+                    this.totalFourScores += item.credit * item.fourRounding;
                     howICalculated += " " + item.course + ":%c " + item.score + "%c x%c " + item.credit + "%c =%c " + item.credit * item.score + "%c \n";
                     cssLog.push("font-weight:bold;");
                     cssLog.push("font-weight:normal;");
@@ -225,6 +242,7 @@ javascript: (async function gpa() {
                 }
             }
             this.gpa = this.totalScores / this.totalCredits;
+            this.fourGPA = this.totalFourScores / this.totalCredits;
             this.notPassGPA = (this.totalScores + this.notPassTotalScore) / (this.totalCredits + this.notPassCredits);
 
             for (let i = 0; i < data.length; i++)
@@ -267,7 +285,7 @@ javascript: (async function gpa() {
             let headTr = tab.find("thead tr")[0];
             let headTh = $($(headTr).find("th")[0]).clone();
 
-            if ($(headTr).find("th").length < 9) { // First time calculate GPA. Insert checkbox column.
+            if ($(headTr).find("th").length < 10) { // First time calculate GPA. Insert checkbox column.
 
                 $(headTh).attr("title", "Tính hay không tính học phần này trong GPA");
                 $(headTh).children().html("Trong GPA");
@@ -280,7 +298,7 @@ javascript: (async function gpa() {
 
             let parentDiv = $("#lich-thi-dkhp")[0];
             $("#tbGPA").remove();
-            let gpaFieldSet = $('<fieldset id="tbGPA"><legend>Thống kê GPA</legend><div id="tbGPA_wrapper" class="dataTables_wrapper" rold="grid"><table id="tbGPA" class="dkhp-table dataTable"><thead></thead><tbody role="alert" aria-live="polite" aria-relevant="all"></tbody></table></div><p style="margin-top: 10px; color: blue;"><strong>(*)</strong>: Nhấn Ctr+Shift+I và chọn tab Console để xem chi tiết tính toán.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nếu bạn thấy hữu ích, hãy tặng mình một Star <a href="https://github.com/dtrung98/GPABookmarklet">Tại Đây</a> nhé ^^</p></fieldset>');
+            let gpaFieldSet = $('<fieldset id="tbGPA"><legend>Thống kê GPA</legend><div id="tbGPA_wrapper" class="dataTables_wrapper" rold="grid"><table id="tbGPA" class="dkhp-table dataTable"><thead></thead><tbody role="alert" aria-live="polite" aria-relevant="all"></tbody></table></div><p style="margin-top: 10px; color: blue;"><strong>(*)</strong>: Nhấn Ctr+Shift+I và chọn tab Console để xem chi tiết tính toán.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thang điểm chữ và Thang điểm 4 được quy đổi dựa theo Sổ tay sinh viên Khóa 2022.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nếu bạn thấy hữu ích, hãy tặng mình một Star <a href="https://github.com/dtrung98/GPABookmarklet">Tại Đây</a> nhé ^^</p></fieldset>');
             let gpaTableHead = $(gpaFieldSet).find("thead")[0];
             let gpaTableBody = $(gpaFieldSet).find("tbody")[0];
 
@@ -297,6 +315,7 @@ javascript: (async function gpa() {
 
             $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình tích lũy (GPA)</td><td class="center gpa" id="calGPA"><b>' + this.gpa + '</b></td></tr>');
             $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình tích lũy (GPA) hệ 4</td><td class="center gpa" id="calGPA"><b>' + (this.gpa * 4 / 10) + '</b></td></tr>');
+            $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình tích lũy (GPA) hệ 4 (theo STSV)</td><td class="center gpa" id="calGPA"><b>' + this.fourGPA + '</b></td></tr>');
             $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình học tập</td><td class="center gpa" id="calGPA">' + this.notPassGPA + '</td></tr>');
             $(gpaTableBody).append('<tr class="even"><td class="left">Tổng tín chỉ đã tích luỹ</td><td class="center gpa" id="calSumCredit">' + this.totalCredits + ' tín chỉ</td></tr>');
             $(gpaTableBody).append('<tr class="odd"><td class="left">Tổng điểm đã tích lũy</td><td class="center gpa" id="sumScore">' + this.totalScores + '</td></tr>');
@@ -332,22 +351,23 @@ javascript: (async function gpa() {
 
         saveToFileCSV() {
             let idxRow = -1;
-            let csv = 'Tên môn học, Số tín chỉ, Điểm, Điểm chữ, Học kỳ, Lớp, Ghi chú\n';
+            let csv = 'Tên môn học, Số tín chỉ, Điểm, Điểm chữ, Điểm 4, Học kỳ, Lớp, Ghi chú\n';
             this.data.forEach(function (row) {
                 if (row.include) {
-                    csv += row.course + ', ' + row.credit + ', ' + row.score + ', ' + row.letter + ', ' + row.semester + ', ' + row.class + ', ' + row.note + '\n';
+                    csv += row.course + ', ' + row.credit + ', ' + row.score + ', ' + row.letter + ', ' + row.fourRounding + ', ' + row.semester + ', ' + row.class + ', ' + row.note + '\n';
                     idxRow++;
                 }
             });
             
+            csv += "Điểm trung bình tích lũy (GPA): " + this.cal.gpa + "\n";
+            csv += "Điểm trung bình tích lũy (GPA) hệ 4: " + (this.cal.gpa * 4 / 10) + "\n";
+            csv += "Điểm trung bình tích lũy (GPA) hệ 4 (theo STSV): " + this.cal.fourGPA + "\n";
+            csv += "Điểm trung bình học tập: " + this.cal.notPassGPA + "\n";
             csv += "Số tín chỉ tích lũy: " + this.cal.totalCredits + "\n";
             csv += "Tổng điểm tích lũy: " + this.cal.totalScores + "\n";
             csv += "Tổng học phần: " + this.data.length + "\n";
             csv += "Tổng học phần trong GPA: " + (this.data.length - this.cal.removedCoursesSize) + "\n";
-            csv += "Điểm trung bình tích lũy (GPA): " + this.cal.gpa + "\n";
-            csv += "Điểm trung bình tích lũy (GPA) hệ 4: " + (this.cal.gpa * 4 / 10) + "\n";
-            csv += "Điểm trung bình học tập: " + this.cal.notPassGPA + "\n";
-
+            
             let hiddenElement = document.createElement('a');
             hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent('\uFEFF' + csv);
             hiddenElement.target = '_blank';
@@ -356,19 +376,23 @@ javascript: (async function gpa() {
         }
     }
 
-    //$('#ctl00_ContentPlaceHolder1_ctl00_searchResult').before('<input type="checkbox" id="isSemesterCal"><label for="isSemesterCal>Tính theo học kỳ</label><br><br>');
+    // Main computation session starts here
 
     if (isCalSemester != "true") await goToAllCoursesPage();
     initUserCourseData();
-    addLetterGrade();
+    addSupplementaryGrade();
     let cal = new Calculation();
     cal.calculateGPA();
     cal.formatCoursesTableAndCreateResultTable();
     tab.dataTable().fnDestroy();
     tab.dataTable({
         "bPaginate": false,
-        "aaSorting": [[1, "asc"]],
         "bJQueryUI": true,
+        "bAutoWidth": false,
+        "aaSorting": [[1, "asc"]],
+        "aoColumnDefs": [
+            {"sWidth": '50%', "aTargets": [2]},
+        ]
     })
 
     // When change state of a course, recalculate GPA. Use on() instead of click() to apply on future created checkbox in DataTable
@@ -405,20 +429,23 @@ javascript: (async function gpa() {
         });
     }
 
-    // Create a button to toggle letter grade
+    // Create a button to toggle supplementary grade
     if ( !$('#toggleLetterGrade')[0])
     {
         let toggleButton = $(saveButton).clone().attr("id", "toggleLetterGrade");
         $(toggleButton).attr("style", "width: 25%");
         $(toggleButton).css({'margin-bottom': '10px'});
-        $($(toggleButton).find(".ob_iBC")[0]).text("Hiện/Ẩn điểm chữ");
+        $($(toggleButton).find(".ob_iBC")[0]).text("Hiện/Ẩn Thang Chữ/4");
         $(saveButton).after(toggleButton);
 
         $(toggleButton).click(function (event) {
             event.preventDefault();
             let isVisible = tab.fnSettings().aoColumns[7].bVisible;
             tab.fnSetColumnVis(7, !isVisible);
+            tab.fnSetColumnVis(8, !isVisible);
         });
+
+        $(toggleButton).click(); // Hide supplementary grade by default
     }
 
     // Create a button to toggle semester calculation
