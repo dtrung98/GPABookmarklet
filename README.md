@@ -76,6 +76,12 @@ Besides that, I also add some minor modifications to this bookmaklet for ~~my~~ 
 
 - Sometimes enabling the letter/4 grade system causes wrong format. You should re-run the GPABookmarklet to see if that can be fixed.
 
+## Future modification
+
+- Let user adds courses as if they have studided them and calculate GPA (it can be useful in case you want to plan what subjects you should learn and what grade you should get for goal GPA).
+
+- Create a version for Tampermonkey, so that the source code can be more organizable and be able to add more features.
+
 ## Guideline
 
 - Step 1: You must be a HCMUS Student.
