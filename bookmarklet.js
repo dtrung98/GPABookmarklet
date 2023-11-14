@@ -73,6 +73,10 @@ javascript: (async function gpa() {
     let isCalSemester = localStorage.getItem("isCalSemester");
     let isRunBookmarkAgain = false;
 
+    function toFixed(num) {
+        return Math.round(num * 1000) / 1000;
+    }
+
     function initUserCourseData() {
 
         const exceptCourses = [
@@ -316,10 +320,10 @@ javascript: (async function gpa() {
             $(gpaTableHead).append(gpaHeadCol1);
             $(gpaTableHead).append(gpaHeadCol2);
 
-            $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình tích lũy (GPA)</td><td class="center gpa" id="calGPA"><b>' + this.gpa + '</b></td></tr>');
-            $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình tích lũy (GPA) hệ 4</td><td class="center gpa" id="calGPA"><b>' + (this.gpa * 4 / 10) + '</b></td></tr>');
-            $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình tích lũy (GPA) hệ 4 (theo STSV)</td><td class="center gpa" id="calGPA"><b>' + this.fourGPA + '</b></td></tr>');
-            $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình học tập</td><td class="center gpa" id="calGPA">' + this.notPassGPA + '</td></tr>');
+            $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình tích lũy (GPA)</td><td class="center gpa" id="calGPA"><b>' + toFixed(this.gpa) + '</b></td></tr>');
+            $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình tích lũy (GPA) hệ 4</td><td class="center gpa" id="calGPA"><b>' + toFixed( (this.gpa * 4 / 10)) + '</b></td></tr>');
+            $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình tích lũy (GPA) hệ 4 (theo STSV)</td><td class="center gpa" id="calGPA"><b>' + toFixed(this.fourGPA) + '</b></td></tr>');
+            $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình học tập</td><td class="center gpa" id="calGPA">' + toFixed(this.notPassGPA) + '</td></tr>');
             $(gpaTableBody).append('<tr class="even"><td class="left">Tổng tín chỉ đã tích luỹ</td><td class="center gpa" id="calSumCredit">' + this.totalCredits + ' tín chỉ</td></tr>');
             $(gpaTableBody).append('<tr class="odd"><td class="left">Tổng điểm đã tích lũy</td><td class="center gpa" id="sumScore">' + this.totalScores + '</td></tr>');
             $(gpaTableBody).append('<tr class="even"><td class="left">Sô học phần đã học</td><td class="center gpa" id="sumCourse">' + data.length + ' học phần</td></tr>');
