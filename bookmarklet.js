@@ -217,7 +217,7 @@ javascript: (async function gpa() {
         }
 
         calculateGPA () {
-            //;
+            console.clear();
 
             let howICalculated = "%c Điểm tính thế nào nhở ?%c \n\n";
             let cssLog = ["font-size:16px", "font-size:normal"];
