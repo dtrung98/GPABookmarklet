@@ -2,7 +2,7 @@
 
 Add a feature to Hcmus Portal, calculate and show your GPA
 
-*Thanks [Lê Trung Sơn](https://www.facebook.com/trungson.le.142) for confirming the correctness of the Bookmarklet! Thanks **[vkhuy's repository](https://github.com/vkhuy/GPABookmarklet)** for [this finding](#thcsBug).*
+*Thanks **[vkhuy's repository](https://github.com/vkhuy/GPABookmarklet)** for [this finding](#thcsBug). Thanks [Nguyen Quang Thang](https://github.com/thanguyen165) for the 4.0 grade system calculation implementation!*
 
 ## What is this?
 
