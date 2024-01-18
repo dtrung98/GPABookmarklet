@@ -134,16 +134,14 @@ javascript: (async function gpa() {
                     row.include = false;
                     row.whyExclude += "Điểm nhỏ hơn 5, chưa qua môn. ";
                 }
-                else {
-                    let include = true;
+                {
                     for (let j = 0; j < exceptCourses.length; j++) {
                         if (row.course.includes(exceptCourses[j])) {
-                            include = false;
+                            row.include = false;
                             row.whyExclude += "Học phần không tính trong GPA. ";
                             break;
                         }
                     };
-                    row.include = include;
                 }
 
                 for (let j = 0; j < data.length; j++) {
@@ -176,8 +174,20 @@ javascript: (async function gpa() {
 
         data.forEach(item => {
             if (item.score >= 0) {
-                item.letter = supplementaryGrade.find(grade => item.score >= grade.score).letter;
-                item.fourRounding = supplementaryGrade.find(grade => item.score >= grade.score).fourRounding;
+                const lowerGrade = supplementaryGrade.find(grade => item.score >= grade.score);
+                const upperGrade = supplementaryGrade.find(grade => item.score < grade.score);
+        
+                if (lowerGrade && upperGrade) {
+                    const scoreDiff = upperGrade.score - lowerGrade.score;
+                    const ratio = (item.score - lowerGrade.score) / scoreDiff;
+        
+                    item.letter = lowerGrade.letter;
+                    item.fourRounding = toFixed(lowerGrade.fourRounding + ratio * (upperGrade.fourRounding - lowerGrade.fourRounding));
+                } else {
+                    // Handle edge cases where item.score is higher than the highest score
+                    item.letter = "A+";
+                    item.fourRounding = 4.0;
+                }
             }
         });
 
@@ -323,8 +333,7 @@ javascript: (async function gpa() {
             $(gpaTableHead).append(gpaHeadCol2);
 
             $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình tích lũy (GPA)</td><td class="center gpa" id="calGPA"><b>' + toFixed(this.gpa) + '</b></td></tr>');
-            $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình tích lũy (GPA) hệ 4</td><td class="center gpa" id="calGPA"><b>' + toFixed( (this.gpa * 4 / 10)) + '</b></td></tr>');
-            $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình tích lũy (GPA) hệ 4 (theo STSV)</td><td class="center gpa" id="calGPA"><b>' + toFixed(this.fourGPA) + '</b></td></tr>');
+            $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình tích lũy (GPA) hệ 4</td><td class="center gpa" id="calGPA"><b>' + toFixed(this.fourGPA) + '</b></td></tr>');
             $(gpaTableBody).append('<tr class="odd"><td class="left ">Điểm trung bình học tập</td><td class="center gpa" id="calGPA">' + toFixed(this.notPassGPA) + '</td></tr>');
             $(gpaTableBody).append('<tr class="even"><td class="left">Tổng tín chỉ đã tích luỹ</td><td class="center gpa" id="calSumCredit">' + this.totalCredits + ' tín chỉ</td></tr>');
             $(gpaTableBody).append('<tr class="odd"><td class="left">Tổng điểm đã tích lũy</td><td class="center gpa" id="sumScore">' + this.totalScores + '</td></tr>');
@@ -369,8 +378,7 @@ javascript: (async function gpa() {
             });
             
             csv += "Điểm trung bình tích lũy (GPA): " + this.cal.gpa + "\n";
-            csv += "Điểm trung bình tích lũy (GPA) hệ 4: " + (this.cal.gpa * 4 / 10) + "\n";
-            csv += "Điểm trung bình tích lũy (GPA) hệ 4 (theo STSV): " + this.cal.fourGPA + "\n";
+            csv += "Điểm trung bình tích lũy (GPA) hệ 4: " + this.cal.fourGPA + "\n";
             csv += "Điểm trung bình học tập: " + this.cal.notPassGPA + "\n";
             csv += "Số tín chỉ tích lũy: " + this.cal.totalCredits + "\n";
             csv += "Tổng điểm tích lũy: " + this.cal.totalScores + "\n";
