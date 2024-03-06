@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2EVR7Q6GQG"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-  
-    gtag('config', 'G-2EVR7Q6GQG');
-  </script>
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
@@ -174,9 +165,38 @@
   <![endif]-->
 </head>
 <body>
-<h1 id="hcmus-gpa-calculator-bookmarklet-v-2.0.0">HCMUS GPA Calculator
-Bookmarklet (v 2.0.0)</h1>
-<p>Add a feature to Hcmus Portal, calculate and show your GPA</p>
+<h1 id="hcmus-gpa-calculator-bookmarklet-maintenance-project">HCMUS GPA
+Calculator Bookmarklet Maintenance Project</h1>
+<ul>
+<li><a
+href="#hcmus-gpa-calculator-bookmarklet-maintenance-project">HCMUS GPA
+Calculator Bookmarklet Maintenance Project</a>
+<ul>
+<li><a href="#contributions">Contributions</a></li>
+<li><a href="#what-is-this">What is this?</a></li>
+<li><a href="#list-updates">List Updates</a>
+<ul>
+<li><a href="#update-5--">Update 5 (-)</a></li>
+<li><a href="#update-4--">Update 4 (-)</a></li>
+<li><a href="#update-3--">Update 3 (-)</a></li>
+<li><a href="#update-2">Update 2</a></li>
+<li><a href="#update-1">Update 1</a></li>
+<li><a href="#update-0">Update 0</a>
+<ul>
+<li><a href="#list-of-bugs-fixed">List of bugs fixed</a></li>
+<li><a href="#list-of-minor-modification">List of minor
+modification</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#bugs">Bugs</a></li>
+<li><a href="#guideline">Guideline</a></li>
+<li><a href="#bugs-report-and-suggestions">Bugs Report and
+Suggestions</a></li>
+<li><a href="#licenses-and-derivative-works">Licenses and Derivative
+Works</a></li>
+</ul></li>
+</ul>
+<h2 id="contributions">Contributions</h2>
 <p><em>Thanks <strong><a
 href="https://github.com/vkhuy/GPABookmarklet">vkhuy’s
 repository</a></strong> for <a href="#thcsBug">this finding</a>. Thanks
@@ -189,16 +209,95 @@ version</a> of GPABookmarlet utility, which is created by the execellent
 <a href="https://github.com/dtrung98/GPABookmarklet">dtrung98’s
 repository</a>. Thank you so much for providing this repository as an
 open source project!</p>
+<p>This project maintained primarily by DreamyWanderer Github user, who
+is currently a student of VNU-HCMUS. Originally, this extension is
+developed by dtrung98 Github user (a graduated student) with a simple
+purpose: <strong>Calculate the GPA for HCMUS student
+automatically</strong> on their Portal page.</p>
 <p>It has been 4 years since the last updated of original repository,
 and unfortunately I observed a bug comes from Portal itself which this
 bookmarklet need to deal with. Although they are not computation bugs
 (which will be more severe), but they can cause some confusion for user.
-Recently the portal is receiving frequenly updating, so I think there
-should be a consistent maintenance for GPABookmarklet to cope with those
-changings 😢.</p>
+Recently the portal is receiving frequenly updating and the school is
+also developing a new Portal page, so I think there should be a
+consistent maintenance for GPABookmarklet to cope with those changings
+😢.</p>
 <p>Besides that, I also add some minor modifications to this bookmaklet
 for <del>my</del> user’s convenience 😆.</p>
-<h2 id="list-of-bugs-fixed">List of bugs fixed</h2>
+<p>So in short, the goal of this project is:</p>
+<ul>
+<li>Maintenace the extension to <strong>work at least properly</strong>
+with the <strong>old</strong> Portal page <strong>until that page is no
+longer work</strong>. There will be <strong>no more</strong> features
+added to this extension version.</li>
+<li>Develope the extension to <strong>work properly</strong> with the
+<strong>new</strong> Portal page (bring all funtions that
+<strong>existed</strong> in old Portal page to the new one) and
+<strong>add more features</strong> as users requires.</li>
+</ul>
+<h2 id="list-updates">List Updates</h2>
+<h3 id="update-5--">Update 5 (-)</h3>
+<p>Áp dụng với GPA Bookmarklet cho <a
+href="https://student.hcmus.edu.vn/student-affairs">Portal mới</a>:</p>
+<ul>
+<li>Thêm tùy chọn sửa bảng điểm và thêm dòng mới vào bảng điểm (Giúp lập
+plan tiện hơn). Với các học phần trùng mã: học phần phía sau ưu tiên hơn
+học phần ở trước. Các giá trị Năm học - Học kỳ khi sửa hiện không có
+hiệu lực. Nên xóa các dòng mới khi chuyển đổi Năm học - Học kỳ. Nói
+chung, cẩn thận khi edit để không làm loạn bảng điểm!</li>
+<li>Thêm cột Status để thêm/bỏ học phần vào GPA.</li>
+<li>UI: Thêm Khung hiển thị kết quả GPA mini tại góc phải dưới màn hình
+để thuận tiện xem kết quả hơn. (Nội dung của Khung thì chắc
+self-explanatory).</li>
+<li>Minor: Thêm kết quả GPA thang 4.</li>
+</ul>
+<figure>
+<img src="Figure/Editting.gif" alt="Editting" />
+<figcaption aria-hidden="true">Editting</figcaption>
+</figure>
+<h3 id="update-4--">Update 4 (-)</h3>
+<p>Phiên bản dùng cho trang Portal cũ (portal4.hcmus.edu.vn) hiện có thể
+chạy trên trình duyệt của điện thoại di động và tự động cập nhật các
+chỉnh sửa mà không cần phải thay đổi bookmark thủ công (tương tự như bản
+dùng cho trang Portal mới (student.hcmus.edu.vn) ở Update 3). Các bạn
+nên vào trang hướng dẫn
+(https://dreamywanderer.github.io/GPABookmarklet_Maintanence/) và thay
+Bookmark của GPA dùng cho Portal cũ lần cuối nhé.</p>
+<h3 id="update-3--">Update 3 (-)</h3>
+<p>Hiện tại, các bạn có thể sử dụng GPA Bookmarklet cho <a
+href="https://student.hcmus.edu.vn/student-affairs">Portal mới</a> của
+trường nhé. Các tính năng hiện có:</p>
+<ul>
+<li>Tính điểm GPA.</li>
+<li>Hiện các bạn có thể chạy tiện ích này với bản Portal mới ngay trên
+trình duyệt điện thoại nhé.</li>
+</ul>
+<p>Trong thời gian tới nếu cần thiết thì mình sẽ implement lại các tính
+năng hiện có bên bản của Portal cũ để hoạt động trên Portal mới.</p>
+<p>Hiện tại trang Portal mới của trường có vẻ đang được update thường
+xuyên nên sẽ không tránh khỏi nhiều lúc tiện ích bị lỗi. Khi đó mình sẽ
+tìm cách fix lại. Nếu các bạn dùng bản có tên “Khtn GPA Portal-v2.0” thì
+không cần cập nhật thủ công nhé, chỉ cần chờ một chút (Chắc vậy!).</p>
+<p>Note: Nếu trang Portal mới của trường nâng mức bảo mật của CSP thì
+phiên bản di động và cập nhật tự động sẽ không hoạt động nữa
+:&gt;&gt;</p>
+<h3 id="update-2">Update 2</h3>
+<p>Cập nhật lại cách quy đổi hệ 4.0.</p>
+<p>Ngoài ra, các đầu điểm chính thức từ Phòng Đào tạo sẽ cập nhật tại
+trang Portal mới của trường, còn tại trang Poral cũ thì không chắc là
+cũng sẽ vậy. Do đó các bạn cân nhắc xem điểm bên trang mới nhé. Nếu như
+cần thiết thì tiện ích này sẽ được chỉnh sửa nhanh để dùng tạm cho trang
+Portal mới 🥲.</p>
+<h3 id="update-1">Update 1</h3>
+<p>GPA Bookmarklet v 2.0 sẽ được nhập vào Github repo gốc của anh Lê
+Đình Trung, nên các bạn cũng có thể dùng link cũ
+(https://dtrung98.github.io/GPABookmarklet/) vẫn được nhé.</p>
+<p>Tuy nhiên, do có độ trễ khi hai trang hướng dẫn được nhập lại nên các
+bản Update có kí hiệu (-) sẽ chỉ áp dụng với đường link
+(https://dreamywanderer.github.io/GPABookmarklet_Maintanence/) cho tới
+khi kí hiệu (-) mất.</p>
+<h3 id="update-0">Update 0</h3>
+<h5 id="list-of-bugs-fixed">List of bugs fixed</h5>
 <ul>
 <li><p><del>Deal with a bug comes from Portal, which duplicate some
 graded courses (GPABookmarklet takes all of duplication for
@@ -235,7 +334,7 @@ will not conflict with normarl grading calculation 🫣.</li>
 </figure>
 <p><br></p></li>
 </ul>
-<h2 id="list-of-minor-modification">List of minor modification</h2>
+<h4 id="list-of-minor-modification">List of minor modification</h4>
 <ul>
 <li><p>Calculate “<strong>Điểm trung bình học tập</strong>” (includes
 courses that student has not passed).</p>
@@ -292,14 +391,6 @@ that must not to be included in GPA.</p></li>
 <ul>
 <li>Sometimes enabling the letter/4 grade system causes wrong format.
 You should re-run the GPABookmarklet to see if that can be fixed.</li>
-</ul>
-<h2 id="future-modification">Future modification</h2>
-<ul>
-<li><p>Let user adds courses as if they have studided them and calculate
-GPA (it can be useful in case you want to plan what subjects you should
-learn and what grade you should get for goal GPA).</p></li>
-<li><p>Create a version for Tampermonkey, so that the source code can be
-more organizable and be able to add more features.</p></li>
 </ul>
 <h2 id="guideline">Guideline</h2>
 <ul>
